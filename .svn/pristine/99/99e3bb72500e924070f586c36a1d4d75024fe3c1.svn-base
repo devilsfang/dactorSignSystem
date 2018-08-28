@@ -1,0 +1,32 @@
+package plugins.winning.inpatient.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import common.util.Constains;
+import common.util.HttpRequestUtil;
+import plugins.winning.WinnigConfig;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+
+import net.sf.json.JSONObject;
+
+public class SignDetailService {
+	public static WinningResponse SignDetailService(WinningRequest request){
+		WinningResponse response=new WinningResponse();
+		
+		JSONObject json=HttpRequestUtil.httpPost(WinnigConfig.SignDetailUrl, request.getParam());
+		List listDat=new ArrayList();
+		listDat.add(json);
+		if(json==null){
+			response.setRet_code(Constains.ERROR_CODE);
+			response.setRet_msg("网络访问异常");
+		}else{
+			response.setRet_code(Constains.SUCCESS_CODE);
+			response.setRet_data(listDat);
+		}
+			
+		return response;
+		
+	}
+}

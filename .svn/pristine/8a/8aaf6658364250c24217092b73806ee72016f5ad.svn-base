@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=yes"/>
+<title>Insert title here</title>
+ <script src="/dssweb/js/UI2.0/js/jsloader.js" type="text/javascript"></script>
+<script src="/dssweb/js/UI2.0/js/allUIPkg.js" type="text/javascript"></script> 
+<script src="js/patientDetails.js" type="text/javascript"></script> 
+
+<link rel="stylesheet" href="css/patientDetails.css" type="text/css"></link>
+<style>
+#tabName1{
+background-color:#fff;
+visibility:hidden;
+}
+.l-page-tabName{
+border-radius: 10px 10px 0px 0px;
+font-size:16px;
+margin-left:4px;
+background-color:#f0f4f5;
+}
+.l-page-tabPage{
+height:0px;
+}
+
+.l-page-tabed{
+background-color:#dde5e8;
+color:#000;
+border-radius: 10px 10px 0px 0px;
+}
+</style>
+</head>
+<body style="background-color: rgb(221,229,232)" >
+<div id="page"></div>
+	<div id="rightShow">
+		<div id="deTailsShow">
+
+			<div class="first">
+				<div class="details" id="records">住院记录</div>
+				<div class="date">2018 6/30</div>
+			</div>
+
+			<div class="first">
+				<div class="details" id="check">门诊检查</div>
+				<div class="date">2018 6/30</div>
+
+			</div>
+
+		</div>
+		<div class="icon" id="icon1">
+			<div id="icon2">
+				<img id="picture" src="/dssweb/resource/images/icon/Arrow.png"
+					style="width: 30px; height: 30px">
+			</div>
+		</div>
+	</div>
+</body>
+</html>

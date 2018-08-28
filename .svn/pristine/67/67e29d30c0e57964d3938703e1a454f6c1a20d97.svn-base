@@ -1,0 +1,330 @@
+package servlet.command;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.DocListInDataBean;
+import servlet.outDataBean.DocListOutDataBean;
+
+@WebServlet("/DocList")
+public class DocListServlet extends HttpServlet {
+
+	boolean test = false;
+
+	/**
+	 * Constructor of the object.
+	 */
+	public DocListServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doPost(request, response);
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to
+	 * post.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/***
+		 * 将request解析为inDataBean
+		 */
+		DocListInDataBean inData = new DocListInDataBean();
+		VoResponse voResponse = new VoResponse();
+		try {
+			inData.setUserId(request.getParameter("userId"));
+			inData.setNowPage(request.getParameter("nowPage"));
+			inData.setPageNum(request.getParameter("pageNum"));
+			if (StringUtil.isEmpty(inData.getUserId()) || StringUtil.isEmpty(inData.getNowPage())
+					|| StringUtil.isEmpty(inData.getPageNum())) {
+				throw new Exception("参数不能为空");
+			}
+		} catch (Exception e) {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("参数异常：" + e.getMessage());
+			HttpResponseUtil.response(voResponse, response);
+			return;
+		}
+
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		WinningResponse responseW = new WinningResponse();
+		if (!test) {
+			Map param = new HashMap();
+			param.put("code", inData.getUserId());
+			param.put("nowPage", inData.getNowPage());
+			param.put("pageNum", inData.getPageNum());
+			WinningRequest requestW = new WinningRequest();
+			requestW.setParam(param);
+			/***
+			 * 调用winning的服务进行业务请求
+			 */
+			responseW = QueryDocListService.QueryDocList(requestW);
+		} else {
+			List retDat = new ArrayList();
+			Map testData = new HashMap();
+			testData.put("userId", "01");
+			testData.put("cPatientName", "张三");
+			testData.put("cPatientCode", "87065");
+			testData.put("iBookId", "1001");
+			testData.put("BookName", "住院记录");
+			testData.put("PatSex", "女");
+			testData.put("PatAge", "17");
+			testData.put("RequestTime", "2017-01-01 ");
+			testData.put("RequestName", "李四");
+			testData.put("RequestDept", "骨科");
+			testData.put("RequestTitl", "处长");
+			testData.put("RequestTel", "16747562837");
+			retDat.add(testData);
+
+			Map testData_1 = new HashMap();
+			testData_1.put("userId", "01");
+			testData_1.put("cPatientName", "张三");
+			testData_1.put("cPatientCode", "87065");
+			testData_1.put("iBookId", "1002");
+			testData_1.put("BookName", "检查记录");
+			testData_1.put("PatSex", "女");
+			testData_1.put("PatAge", "17");
+			testData_1.put("RequestTime", "2017-01-01 ");
+			testData_1.put("RequestName", "李四");
+			testData_1.put("RequestDept", "骨科");
+			testData_1.put("RequestTitl", "处长");
+			testData_1.put("RequestTel", "16747562837");
+			retDat.add(testData_1);
+
+			Map testData2 = new HashMap();
+			testData2.put("userId", "03");
+			testData2.put("cPatientName", "王五");
+			testData2.put("cPatientCode", "87067");
+			testData2.put("iBookId", "3001");
+			testData2.put("BookName", "检查记录");
+			testData2.put("PatSex", "女");
+			testData2.put("PatAge", "17");
+			testData2.put("RequestTime", "2017-01-03 ");
+			testData2.put("RequestName", "李四");
+			testData2.put("RequestDept", "皮肤科");
+			testData2.put("RequestTitl", "处长");
+			testData2.put("RequestTel", "16747562837");
+			retDat.add(testData2);
+
+			Map testData_2 = new HashMap();
+			testData_2.put("userId", "01");
+			testData_2.put("cPatientName", "张三");
+			testData_2.put("cPatientCode", "87065");
+			testData_2.put("iBookId", "1003");
+			testData_2.put("BookName", "检验记录");
+			testData_2.put("PatSex", "女");
+			testData_2.put("PatAge", "17");
+			testData_2.put("RequestTime", "2017-01-01 ");
+			testData_2.put("RequestName", "李四");
+			testData_2.put("RequestDept", "骨科");
+			testData_2.put("RequestTitl", "处长");
+			testData_2.put("RequestTel", "16747562837");
+			retDat.add(testData_2);
+
+			Map testData1 = new HashMap();
+			testData1.put("userId", "02");
+			testData1.put("cPatientName", "赵六");
+			testData1.put("cPatientCode", "87066");
+			testData1.put("iBookId", "2001");
+			testData1.put("BookName", "text");
+			testData1.put("PatSex", "男");
+			testData1.put("PatAge", "18");
+			testData1.put("RequestTime", "2017-01-01 ");
+			testData1.put("RequestName", "李光");
+			testData1.put("RequestDept", "牙科");
+			testData1.put("RequestTitl", "处长");
+			testData1.put("RequestTel", "163337562837");
+			retDat.add(testData1);
+
+			Map testData1_1 = new HashMap();
+			testData1_1.put("userId", "02");
+			testData1_1.put("cPatientName", "赵六");
+			testData1_1.put("cPatientCode", "87066");
+			testData1_1.put("iBookId", "2002");
+			testData1_1.put("BookName", "检验记录");
+			testData1_1.put("PatSex", "女");
+			testData1_1.put("PatAge", "17");
+			testData1_1.put("RequestTime", "2017-01-03 ");
+			testData1_1.put("RequestName", "李四");
+			testData1_1.put("RequestDept", "皮肤科");
+			testData1_1.put("RequestTitl", "处长");
+			testData1_1.put("RequestTel", "16747562837");
+			retDat.add(testData1_1);
+
+			Map testData2_1 = new HashMap();
+			testData2_1.put("userId", "03");
+			testData2_1.put("cPatientName", "张都");
+			testData2_1.put("cPatientCode", "87067");
+			testData2_1.put("iBookId", "3002");
+			testData2_1.put("BookName", "pic");
+			testData2_1.put("PatSex", "女");
+			testData2_1.put("PatAge", "17");
+			testData2_1.put("RequestTime", "2017-01-03 ");
+			testData2_1.put("RequestName", "李四");
+			testData2_1.put("RequestDept", "皮肤科");
+			testData2_1.put("RequestTitl", "处长");
+			testData2_1.put("RequestTel", "16747562837");
+			retDat.add(testData2_1);
+
+			Map testData1_2 = new HashMap();
+			testData1_2.put("userId", "02");
+			testData1_2.put("cPatientName", "张都");
+			testData1_2.put("cPatientCode", "87066");
+			testData1_2.put("iBookId", "2003");
+			testData1_2.put("BookName", "pic");
+			testData1_2.put("PatSex", "女");
+			testData1_2.put("PatAge", "17");
+			testData1_2.put("RequestTime", "2017-01-03 ");
+			testData1_2.put("RequestName", "李四");
+			testData1_2.put("RequestDept", "皮肤科");
+			testData1_2.put("RequestTitl", "处长");
+			testData1_2.put("RequestTel", "16747562837");
+			retDat.add(testData1_2);
+
+			if (inData.getUserId().equals("1184")) {
+				responseW.setRet_code("0000");
+				responseW.setRet_msg("");
+				responseW.setRet_data(retDat);
+			} else {
+				responseW.setRet_code("9999");
+				responseW.setRet_msg("不存在此用户");
+			}
+
+		}
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		List retData = new ArrayList();
+		List responseWretData = responseW.getRet_data();
+		if (responseW.isSuccess()) {
+			try {
+				for (int i = 0; i < responseWretData.size(); i++) {
+
+					Map data = (Map) responseWretData.get(i);
+					DocListOutDataBean outData = getMapList(retData, data);
+					if (outData == null) {
+						outData = new DocListOutDataBean();
+//						outData.setUserId(data.get("userId").toString());
+						outData.setPatientName(data.get("cPatientName").toString());
+						outData.setPatientCode(data.get("cPatientCode").toString());
+						outData.setPatientSex(data.get("PatSex").toString());
+						outData.setPatientAge(data.get("PatAge").toString());
+						outData.setBookList(new ArrayList());
+						retData.add(outData);
+					}
+					Map bookMap = new HashMap();
+					bookMap.put("bookId", data.get("iBookId").toString());
+					bookMap.put("bookName", data.get("cBookName").toString());
+					bookMap.put("requestTime", data.get("RequestTime").toString());
+					bookMap.put("requestName", data.get("RequestName").toString());
+					bookMap.put("diagnoseId",data.get("iDiagnoseId").toString());
+					bookMap.put("requestDept",data.get("RequestDept").toString());
+					bookMap.put("requestTitl",data.get("RequestTitl").toString());
+					bookMap.put("requestTel",data.get("RequestTel").toString());
+					bookMap.put("caseHisId",data.get("iCaseHisId").toString());
+					bookMap.put("recordId", data.get("iRecordId").toString());
+					bookMap.put("uniqueId", data.get("uniqueId").toString());
+					
+					outData.getBookList().add(bookMap);
+				}
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(retData);
+				voResponse.setRet_count(retData.size());
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常：" + e.getMessage());
+			}
+
+		} else {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:" + responseW.getRet_msg());
+		}
+
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+	/***
+	 * 从已经生成的列表中寻找同一患者的对象，用于文书按患者分组
+	 * 
+	 * @param retData
+	 * @param data
+	 * @return
+	 */
+	private DocListOutDataBean getMapList(List retData, Map data) {
+		DocListOutDataBean retBean = null;
+		for (int i = 0; i < retData.size(); i++) {
+			if (((DocListOutDataBean) retData.get(i)).getPatientCode().equals(data.get("cPatientCode")))
+				return (DocListOutDataBean) retData.get(i);
+		}
+		return retBean;
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException
+	 *             if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+		String packageName = DocListServlet.class.getPackage().getName();
+		if (packageName.indexOf("test.") >= 0)
+			test = true;
+	}
+}

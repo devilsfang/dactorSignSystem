@@ -1,0 +1,98 @@
+package socket.service.appMessage;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import com.sun.jmx.snmp.Timestamp;
+
+import socket.beans.SocketWriteBean;
+
+public class ClientManager {
+	private static Map<String,Client> clients=new HashMap<String,Client>();
+	
+	public static int count(){
+		return clients.size();
+	}
+	
+	public static List getList(){
+		List list=new ArrayList();
+		for(Map.Entry<String,Client> entry : clients.entrySet()){
+			Map testData = new HashMap();
+			Client c=entry.getValue();
+			SimpleDateFormat formant=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			testData.put("userId", c.getUserId());
+			testData.put("creatTime", formant.format(c.getCreatTime().getDate()));
+			testData.put("updateTime", formant.format(c.getUpdateTime().getDate()));
+			list.add(testData);
+		}
+		return list;
+	}
+	/**
+	 * 增加客户端
+	 * @param userId
+	 * @param writeQueue
+	 */
+	public static void put(String userId,LinkedBlockingQueue<SocketWriteBean> writeQueue){
+		clients.put(userId,new Client(userId,writeQueue));
+	}
+	/***
+	 * 执行发送
+	 * @param userId
+	 * @param writeBean
+	 */
+	public static void send(String userId,SocketWriteBean writeBean){
+		try {
+			clients.get(userId).getWriteQueue().add(writeBean);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static class Client{
+		String userId;
+		Timestamp creatTime;
+		Timestamp updateTime;
+		LinkedBlockingQueue<SocketWriteBean> writeQueue;
+
+		public Client(String userId,LinkedBlockingQueue<SocketWriteBean> writeQueue){
+			this.userId=userId;
+			this.writeQueue=writeQueue;
+			this.creatTime=new Timestamp();
+			this.updateTime=new Timestamp();
+		}
+		
+		public String getUserId() {
+			return userId;
+		}
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+		public Timestamp getCreatTime() {
+			return creatTime;
+		}
+		public void setCreatTime(Timestamp creatTime) {
+			this.creatTime = creatTime;
+		}
+		public Timestamp getUpdateTime() {
+			return updateTime;
+		}
+		public void setUpdateTime(Timestamp updateTime) {
+			this.updateTime = updateTime;
+		}
+
+		public LinkedBlockingQueue<SocketWriteBean> getWriteQueue() {
+			return writeQueue;
+		}
+
+		public void setWriteQueue(LinkedBlockingQueue<SocketWriteBean> writeQueue) {
+			this.writeQueue = writeQueue;
+		}
+		 
+		
+		
+	}
+}

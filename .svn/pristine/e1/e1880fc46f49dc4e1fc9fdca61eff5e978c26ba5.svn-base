@@ -1,0 +1,218 @@
+var appName="/dssweb";
+$(function() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+	bindSlider();
+});
+function loadPage() {
+	return $("#page")
+			.ligerPage(
+					{
+						title : "",
+						backButton : false,
+						backPage : "/allograph.html",
+						propertyButton : false,
+						prefixID : "scsContacts_cx",
+						iconEnable : false,
+						content : [ {
+							id : "userInfo",
+							group : "病人详情",
+							hideGroup:true,
+							hideGroupTips: true,
+							type : "grid",
+							unformat:true,
+							gridData : {id:1,name:"吴强",sex:"男" ,number:"12345678",doctor:"任虎虎" ,age:"8",kind:"儿科",
+								imgSrc:"/dssweb/resource/images/icon/boyHead.jpg"},
+								columns:[{
+								cells:[{
+									render: function(item){
+										var html=$("<div></div>");
+										var patientShow=$("<div id='patientShow'></div>");
+										var patientLeft=$("<div id='patientLeft'></div>");
+										var patientRight=$("<div id='patientRight'></div>");
+										var patientImg=$("<div id='patientImg'></div>");
+										var patientInfo=$("<div id='patientInfo'></div>");
+										var patientName=$("<div id='patientName'></div>");
+										var patientNumber=$("<div id='patientNumber'></div>");
+										var doctorInfo=$("<div id='doctorInfo'></div>");
+										var doctorType=$("<div id='doctorType'></div>");
+										var doctorName=$("<div id='doctorName'></div>");
+										var doctorCall=$("<div id='doctorCall'></div>");
+										html.append(patientShow);
+										patientShow.append(patientLeft).append(patientRight);
+										patientLeft.append(patientImg).append(patientInfo);
+										patientInfo.append(patientName).append(patientNumber);
+										patientRight.append( doctorInfo).append(doctorCall);
+										doctorInfo.append(doctorType).append(doctorName);
+										patientImg.append("<img src="+" '"+item.imgSrc+"'"+"/>");
+										patientName.append($("<span >"+item.name +"</span>"+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp"+"<span >"+item.sex+ "&nbsp"+item.age +"岁"+"</span>"));
+										patientNumber.append(item.number);
+										doctorType.append($("<span id='secret'><img src='/dssweb/resource/images/icon/eye.png' style='height:15px'/>"+item.kind+"</span>"));
+										doctorName.append("主治医师"+"  "+item.doctor);
+										doctorCall.append("<img src='/dssweb/resource/images/icon/tel.png' style='width:20px;height:20px;'/>");
+										return html.html();
+										
+										
+									},
+									
+								}]
+							},]
+							
+							
+							
+							
+						},
+						            {
+							group : " ",
+
+							hideGroup : true,
+							hideGrouptTips: true,
+							type : "tabPage",
+							onChange:sliderVisible,
+							id : "myContacts",
+							pages : [
+									{
+										tabPage : true,
+										tabId : "myCollection",
+										prefixID : "myCollection",
+										tabName : "<div class='center'><div class='bar' ><img src='8.png'></div><span>住院记录<span><div>",
+										content : [ {
+											id : "userCurrentFun",
+											group : "家长功能",
+											type : "grid",
+											unformat : true,
+											hideGrouptTips : false,
+											// onBeforBuild : removeSuper,
+											gridData : [ {
+												id : 1,
+												name : "谁啊"
+											}, ],
+											// gridParam : {},
+											// onClick : selectionFun,
+											emptyText : "没有要审签的",
+											columns : [
+													{
+														cells : [ {
+															render : function(
+																	gridData) {
+															
+															}
+														} ]
+													},
+											 ]
+										} ]
+
+									}, {
+										tabPage : true,
+										tabId : "scsStudentContacts",
+										prefixID : "scsStudentContacts",
+										tabName : "历史审批",
+										labelWidth : 70,
+										content : [{
+
+											group : "",
+											// hideGroup : true,
+											type : "grid",
+											id : "teachersInfo",
+											unformat:true,
+											gridData:[{person:"我",date:new Date().Format("yyyy-MM-dd"),content:"资料不详细"},
+											          {person:"你",date:new Date().Format("yyyy-MM-dd"),content:"资料不详细啊"} ],
+											columns: [{
+												cells: [{
+													render : function(item){
+														var html=$("<div></div>");
+														var checkShow=$("<div id='checkShow'></div>");
+														var checkInfo=$("<div id='checkInfo'></div>");
+														var checkContent=$("<div id='checkContent'></div>");
+														var checkBlank=$("<div id=checkBlank></div>");
+														html.append(checkShow);
+													   checkShow.append(checkInfo).append(checkContent).append(checkBlank);
+													   checkInfo.append($("<span >"+item.person +"</span>"+"&nbsp"+"<span >"+item.date +"</span>"));
+													   checkContent.append(item.content);
+													   return html.html();
+													}
+													
+													
+												}]
+												
+											}]
+										
+									
+											
+											
+										}]
+									}, {
+										tabPage : true,
+										tabId : "scsStudentContacts",
+										prefixID : "scsStudentContacts",
+										tabName : "患者详情 ",
+										labelWidth : 70,
+										content : []
+									} ]
+						} ]
+					});
+}
+function dateChanged(newDate) {
+	thisPage.grids[0].gridParam.startTime = newDate.replace("年", "-").replace(
+			"月", "-").replace("日", "");
+	thisPage.reLoadData(1, 0, "grid");
+}
+
+function bindSlider(){
+	
+	var html=$("<div id='container'></div>")
+	var sliderContainer=$("<div id='sliderContainer'></div>");
+	var correct=$("<div id='correct'>批改</div>");
+	var pass=$("<div id='pass'>通过</div>");
+	var select=$(" <div id='select'><img class='arrow' src='"+appName+"/resource/images/icon/leftArrow.png'>请滑动选择<img class='arrow' src='"+appName+"/resource/images/icon/rightArrow.png'></div>");
+	var slider=$("<div id='slider'></div>");
+	var sliderBox=$("<div id='sliderBox'></div>");
+	html.append(sliderContainer.append(correct).append(pass).append(select)).append(sliderBox.append(slider));
+
+	$("body").append(html);
+	
+	var sliderjs=$("#slider");
+	var xOld=0;
+	var startX;
+	var xNow;
+	sliderjs.bind("touchstart",function(e){
+		startX=e.originalEvent.touches[0].clientX;
+	});
+
+	sliderjs.bind("touchmove",function(e){
+	    xNow=e.originalEvent.touches[0].clientX-startX;
+		if(xNow>20||xNow<-20){
+			sliderjs.css("transform","translateX("+xNow+"px)");
+			
+		}
+		if(xNow>80){
+			//window.location.href = "test.html";
+			$("#sliderContainer").css("animation","pass 2s");
+			$("#pass").css("color","white");
+			$("#correct").css("display","none");
+			$("#select").css("display","none");
+		}
+		if(xNow<-80){
+			//window.location.href = "test.html";
+			$("#sliderContainer").css("animation","correct 2s");
+			$("#pass").css("display","none");
+			$("#correct").css("color","white");
+			$("#select").css("display","none");
+		}
+		
+	});
+	sliderjs.bind("touchend",function(e){
+		if(-120<xNow<120){
+			sliderjs.css("transform","translateX("+0+"px)");
+			$("#sliderContainer").css("background-color","#b9d1db");
+		}
+	});
+ 
+}
+function sliderVisible(target,toIndex){
+	if(toIndex==0)
+		 $("#container").slideDown(300);
+	else
+		 $("#container").slideUp(300);
+}

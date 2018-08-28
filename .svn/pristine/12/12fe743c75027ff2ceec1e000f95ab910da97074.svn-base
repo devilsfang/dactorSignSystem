@@ -1,0 +1,276 @@
+package socket.service.appMessage;
+
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import com.sun.jmx.snmp.Timestamp;
+import com.sun.media.jfxmedia.logging.Logger;
+
+import net.sf.json.JSONObject;
+import plugins.umeng.push.PushService;
+import socket.beans.SocketWriteBean;
+import socket.service.appMessage.ClientManager.Client;
+
+public class ClientManager {
+	private static Map<String, Client> clients = new HashMap<String, Client>();
+
+	public static int count() {
+		return clients.size();
+	}
+
+	public static List getList() {
+		List list = new ArrayList();
+		for (Map.Entry<String, Client> entry : clients.entrySet()) {
+			Map testData = new HashMap();
+			Client c = entry.getValue();
+			SimpleDateFormat formant = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			testData.put("userId", c.getUserId());
+			testData.put("creatTime", formant.format(c.getCreatTime().getDate()));
+			testData.put("updateTime", formant.format(c.getUpdateTime().getDate()));
+			list.add(testData);
+		}
+		return list;
+	}
+
+	/**
+	 * 增加客户端
+	 * 
+	 * @param userId
+	 * @param writeQueue
+	 */
+	public static void put(String userId, String appType, String appId, LinkedBlockingQueue<SocketWriteBean> writeQueue,
+			Map adapterMap, Socket socket) {
+		clients.put(userId, new Client(userId, appType, appId, writeQueue, adapterMap, socket));
+	}
+
+	/**
+	 * 增加客户端IOS
+	 * 
+	 * @param userId
+	 * @param writeQueue
+	 */
+	public static void put(String userId, String appType, String appId) {
+		clients.put(userId, new Client(userId, appType, appId));
+	}
+
+	/**
+	 * logOut 退出登录
+	 * 
+	 * @param userId
+	 * @param writeQueue
+	 */
+	public static void logOut(String userId) {
+		Client clientOld = getClient(userId);
+		if (clientOld != null &&Constains.Android.equals(clientOld.getAppType())) {
+			// 新的客户端，需要将旧的客户端发送登出命令
+			JSONObject json = new JSONObject();
+			json.put("ret_code", "0000");
+			json.put("ret_msg", "logout");
+			String jsonStr = json.toString();
+			SocketWriteBean retBean = new SocketWriteBean();
+			retBean.setCreateDate(new Date());
+			retBean.setUpdateDate(new Date());
+			retBean.setRequestStr(Constains.LogOut + jsonStr);
+			clientOld.writeQueue.add(retBean);
+		}else{
+			try {
+				PushService.sendIOSUnicast(clientOld.getAppId(), Constains.LogOut, null);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/***
+	 * 连接是否存在
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static boolean exitClient(String userId) {
+		Client client = clients.get(userId);
+		if (client == null) {
+			return false;
+		} else {
+			if (client.getSocket().isConnected())
+				return true;
+			else
+				return false;
+		}
+	}
+
+	/***
+	 * 返回连接
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static Client getClient(String userId) {
+		return clients.get(userId);
+	}
+
+	/***
+	 * 执行发送
+	 * 
+	 * @param userId
+	 * @param writeBean
+	 *            1.成功，2.失败，3超时,4 异常
+	 */
+	public static int send(String userId, SocketWriteBean writeBean) {
+		int re = 4;
+		try {
+			Client client = clients.get(userId);
+			if (client == null) {
+				return 2;
+			}
+			System.out.println(client.getAppType()+client.getAppId());
+			if(Constains.IOS.equals(client.getAppType())){
+				PushService.sendIOSUnicast(client.getAppId(), Constains.NewMsg,null);
+				return 1;
+			}
+			client.getWriteQueue().add(writeBean);
+			if (writeBean.getId() == null) {
+				return 1;
+			} else {
+				long beginTime = new Date().getTime();
+				while (true) {
+					long nowTime = new Date().getTime();
+					if (nowTime - beginTime >= 5000) {
+						re = 3;
+						break;
+					} else {
+						if (clients.get(userId).getAdapterMap().get(writeBean.getId()) != null) {
+							// 再通过返回的数据判断失败还是成功这里设置为成功，毕竟是接收到了
+							SocketWriteBean bean = clients.get(userId).getAdapterMap().get(writeBean.getId());
+							if (bean.getResponseStr() != null && !"".equals(bean.getResponseStr())) {
+								// 这里可以根据返回的具体字符串进行解析而得出具体结果
+								try {
+									JSONObject json = JSONObject.fromObject(bean.getResponseStr());
+									if (json.getString("ret_code").equals("0000")) {
+										re = 1;
+									} else {
+										re = 2;
+									}
+									break;
+								} catch (Exception e) {
+									e.printStackTrace();
+									re = 4;
+								}
+							}
+						}
+					}
+				}
+				// 进行垃圾回收
+				clients.get(userId).getAdapterMap().remove(writeBean.getId());
+				return re;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return re;
+		}
+	}
+
+	public static class Client {
+		Socket socket;
+		String userId;
+		String appType;
+		String appId;
+		Timestamp creatTime;
+		Timestamp updateTime;
+		LinkedBlockingQueue<SocketWriteBean> writeQueue;
+		Map<String, SocketWriteBean> adapterMap;
+
+		public Socket getSocket() {
+			return socket;
+		}
+
+		public String getAppId() {
+			return appId;
+		}
+
+		public void setAppId(String appId) {
+			this.appId = appId;
+		}
+
+		public void setSocket(Socket socket) {
+			this.socket = socket;
+		}
+
+		public Client(String userId, String appType, String appId, LinkedBlockingQueue<SocketWriteBean> writeQueue,
+				Map<String, SocketWriteBean> adapterMap, Socket socket) {
+			this.userId = userId;
+			this.appType = appType;
+			this.appId = appId;
+			this.writeQueue = writeQueue;
+			this.creatTime = new Timestamp();
+			this.updateTime = new Timestamp();
+			this.adapterMap = adapterMap;
+			this.socket = socket;
+		}
+
+		public Client(String userId, String appType, String appId) {
+			this.userId = userId;
+			this.appType = appType;
+			this.appId = appId;
+			this.creatTime = new Timestamp();
+			this.updateTime = new Timestamp();
+		}
+
+		public String getAppType() {
+			return appType;
+		}
+
+		public void setAppType(String appType) {
+			this.appType = appType;
+		}
+
+		public Map<String, SocketWriteBean> getAdapterMap() {
+			return adapterMap;
+		}
+
+		public void setAdapterMap(Map<String, SocketWriteBean> adapterMap) {
+			this.adapterMap = adapterMap;
+		}
+
+		public String getUserId() {
+			return userId;
+		}
+
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+
+		public Timestamp getCreatTime() {
+			return creatTime;
+		}
+
+		public void setCreatTime(Timestamp creatTime) {
+			this.creatTime = creatTime;
+		}
+
+		public Timestamp getUpdateTime() {
+			return updateTime;
+		}
+
+		public void setUpdateTime(Timestamp updateTime) {
+			this.updateTime = updateTime;
+		}
+
+		public LinkedBlockingQueue<SocketWriteBean> getWriteQueue() {
+			return writeQueue;
+		}
+
+		public void setWriteQueue(LinkedBlockingQueue<SocketWriteBean> writeQueue) {
+			this.writeQueue = writeQueue;
+		}
+
+	}
+}

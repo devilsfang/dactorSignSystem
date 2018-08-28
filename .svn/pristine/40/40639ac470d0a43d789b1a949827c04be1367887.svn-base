@@ -1,0 +1,270 @@
+var appName="/dssweb";
+$(function() {
+	// 对页面进行初始化
+	init();
+	// 绑定事件
+	bindEvent();
+
+});
+
+function init() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+};
+
+function bindEvent() {
+	bindPatientDeatils();
+	bindHospitalRecord();
+	bindInspectionRecord();
+	bindExamineRecord();
+
+};
+
+function loadPage() {
+	return $("#page")
+			.ligerPage(
+					{
+						title : "医生签字",
+						foot : defaultFoot,
+						backButton : false,
+						propertyButton : false,
+						prefixID : "default",
+						iconEnable : false,
+						freezeStart : 0,
+						freezeEnd : 0,
+						data : myData,
+						labelWidth : 25,
+						onAfterSubmit : function() {
+							return false
+						},
+						content : [
+								{
+									group : " ",
+									hideGroup : true,
+									hideGroupTips : true,
+									id : "a",
+									type : "grid",
+									gridData : [ myData ],
+									unformat : true,
+									columns : [ {
+										cells : [ {
+											render : function(item) {
+
+												var top = $("<div id='wx'></div>");
+												var userInfo = $("<div id='userInfo'><img src='"
+														+ appName+'/resource/images/icon/Certification.png'
+														+ "'><span>"
+														+ '张英'
+														+ "</span><div id='percent'></div></div>");
+
+												var circle = $("<img src='"+appName+"/resource/images/icon/doctor.png'>"	
+													);
+
+												userInfo.find("#percent")
+														.append(circle);
+
+												var container = $("<div></div>");
+												container.append(top).append(
+														userInfo);
+
+												return container;
+											}
+										} ]
+									} ]
+								},
+								{
+									group : " ",
+									// hideGroup : true,
+									type : "tabPage",
+									id : "teachersInfo",
+									pages : [
+											{
+												tabPage : true,
+												tabId : "allograph",
+												prefixID : "allograph",
+												tabName : "待审签",
+												content : [ {
+													id : "userCurrentFun",
+													group : "",
+													type : "grid",
+													hideGrouptTips : true,
+													// onBeforBuild :
+													// removeSuper,
+													unformat : true,
+													gridData : [ {
+														id : 1,
+														name : "王丽丽",
+														sex : "女",
+														age : "28",
+														number : "295875633",
+														office : "妇科",
+														doctor : "李素素",
+														hospitalRecordTime: "2小时32分钟前",
+														inspectionRecordTime: "2小时32分钟",	
+														examineRecordTime: "2小时32分钟"
+													}, {
+														id : 2,
+														name : "吴强",
+														sex : "男",
+														age : "8",
+														number : "295875633",
+														office : "儿科",
+														doctor : "李素素",
+										
+														hospitalRecordTime: "2小时32分钟前",
+														inspectionRecordTime: "2小时32分钟前",
+														examineRecordTime:"2小时32分钟前"
+
+													}, {
+														id : 3,
+														name : "韩梅梅",
+														sex : "女",
+														age : "20",
+														number : "295875633",
+														office : "妇科",
+														doctor : "李素素",
+														hospitalRecordTime: "2小时32分钟前",
+														inspectionRecordTime:"2小时32分钟前",
+														examineRecordTime:"2小时32分钟前",
+													} ],
+													// gridParam : {},
+													// onClick : selectionFun,
+													emptyText : "没有要审签的",
+													columns : [
+															{
+																width : 60,
+																cells : [ {
+																	render : function(
+																			gridData) {
+
+																		var html = $("<div></div>");
+																		var blank = $("<div class='blank'></div>");
+																		var userInfo = $("<div id='userInf' class='userInf'></div>");
+																		var headImg = $("<div id='headImg' class='headImg'></div>");
+																		var nameInfo = $("<div id='nameInfo' class='nameInfo'></div>");
+																		var workSpace = $("<div id='workSpace' class='workSpace'></div>");
+																		var otherInfo = $("<div id='otherInfo' class='otherInfo'></div>");
+																		var detail = $("<div id='detail' class='detail'></div>");
+																		var beforeTime = $("<div id='beforeTime'> </div>");
+																		html
+																				.append(
+																						blank)
+																				.append(
+																						userInfo
+																								.append(
+																										headImg)
+																								.append(
+																										nameInfo)
+																								.append(
+																										detail)
+																								.append(
+																										otherInfo))
+																				.append(
+																						workSpace);
+																		headImg
+																				.append($("<img src='"+appName+"/resource/images/icon/girl.png'>"));
+																		nameInfo
+																				.append($("<span id='userName'>"
+																						+ gridData.name
+																						+ "</span>"));
+																		nameInfo
+																				.append($("<span id='sex'>"
+																						+ gridData.sex
+																						+ "</span>"));
+																		nameInfo
+																				.append($("<span id='age'>"
+																						+ gridData.age
+																						+ "</span>"));
+																		nameInfo
+																				.append($("<span id='number'>"
+																						+ gridData.number
+																						+ "</span>"));
+
+																		otherInfo
+																				.append($("<span id='office'>"
+																						+ gridData.office
+																						+ "</span>"));
+																		otherInfo
+																				.append($("<span id='doctor'>"
+																						+ "主治医生:"
+																						+ gridData.doctor
+																						+ "</span>"));
+																				detail
+																						.append($("<div name='patientDeatils' class='detailbutton' style='background-color:#bbe4f8' '>患者详情 </div>")),
+																				workSpace
+																						.append(beforeTime);
+																		beforeTime
+																				.append($("<div id='time'><img class='timeIcon' src='"+appName+"/resource/images/icon/time.png'><span id='hospitalRecordTime'>"
+																						+ gridData.hospitalRecordTime
+																						+ "</span></div>"));
+																		workSpace
+																		.append($("<div name='hospitalRecord' class='record' style='background-color:#3e8ee7' '><img class='icon' src='"+appName+"/resource/images/icon/hospitalRecord.png'>住院记录</div>"));
+																		beforeTime
+																				.append($("<div id='time'><img class='timeIcon' src='"+appName+"/resource/images/icon/time.png'><span id='inspectionRecordTime'>"
+																						+ gridData.inspectionRecordTime
+																						+ "</span></div>"));
+																		workSpace
+																		.append($("<div name='inspectionRecord' class='record' style='background-color:#f637a8' '><img class='icon' src='"+appName+"/resource/images/icon/inspectionRecord.png'>检验记录</div>"));
+																		beforeTime
+																				.append($("<div id='time'><img class='timeIcon' src='"+appName+"/resource/images/icon/time.png'><span id='examineRecordTime'>"
+																						+ gridData.examineRecordTime
+																						+ "</span></div>"));
+																		workSpace
+																				.append($("<div name='examineRecord' class='record' style='background-color:#f78837' '><img class='icon' src='"+appName+"/resource/images/icon/examineRecord.png'>检查记录</div>"));
+
+																		return html
+																				.html();
+
+																	}
+																} ]
+															}, ]
+
+												} ]
+
+											}, {
+												tabPage : true,
+												tabId : "checkRecord",
+												prefixID : "checkRecord",
+												tabName : "审签记录",
+
+											}, {
+												tabPage : true,
+												tabId : "search",
+												prefixID : "search",
+												tabName : "检索",
+
+											} ],
+								} ]
+					});
+
+}
+
+function bindPatientDeatils() {
+	$("[name='patientDeatils']").bind(eClick, function() {
+		goUrl("test.html", myData);
+	})
+};
+
+function bindHospitalRecord() {
+	$("[name='hospitalRecord']").bind(eClick, function() {
+		goUrl("test.html", myData);
+	})
+};
+
+function bindInspectionRecord() {
+	$("[name='inspectionRecord']").bind(eClick, function() {
+		goUrl("test.html", myData);
+	})
+};
+
+function bindExamineRecord() {
+	$("[name='examineRecord']").bind(eClick, function() {
+		goUrl("test.html", myData);
+	})
+};
+
+function goUrl(url, json) {
+	data = GetUrlParam()
+	window.location.href = url;
+}

@@ -1,0 +1,210 @@
+package servlet.command;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.LoginService;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.LoginInDataBean;
+import servlet.outDataBean.DocListOutDataBean;
+import servlet.outDataBean.LoginOutDataBean;
+import socket.beans.SocketWriteBean;
+import socket.service.appMessage.ClientManager;
+import socket.service.appMessage.ClientManager.Client;
+import net.sf.json.JSONObject;
+
+@WebServlet("/ReConnect")
+public class ReConnectServlet extends HttpServlet {
+
+	boolean test = false;
+
+	/**
+	 * Constructor of the object.
+	 */
+	public ReConnectServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doPost(request, response);
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to
+	 * post.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		/***
+		 * 将request解析为inDataBean
+		 */
+		LoginInDataBean inData = new LoginInDataBean();
+		VoResponse voResponse = new VoResponse();
+		try {
+			inData.setUserName(request.getParameter("userName").trim());
+			inData.setPassWord(request.getParameter("password"));
+			inData.setDeviceTokens(request.getParameter("deviceTokens"));;
+
+			if (StringUtil.isEmpty(inData.getUserName())) {
+				throw new Exception("参数不能为空");
+			}
+		} catch (Exception e) {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("参数异常：" + e.getMessage());
+			HttpResponseUtil.response(voResponse, response);
+			return;
+		}
+		WinningResponse responseW = new WinningResponse();
+		if (!test) {
+			/***
+			 * 将inDataBean转换为winning的request
+			 */
+			Map param = new HashMap();
+			param.put("code", inData.getUserName());
+			param.put("cpass", inData.getPassWord());
+			WinningRequest requestW = new WinningRequest();
+			requestW.setParam(param);
+			/***
+			 * 调用winning的服务进行业务请求
+			 */
+			responseW = LoginService.Login(requestW);
+
+		} else {
+			List retDat = new ArrayList();
+			Map testData = new HashMap();
+			testData.put("userId", "123");
+			testData.put("StaffName", "张三");
+			testData.put("HospitalName", "长治市妇幼保健医院");
+			testData.put("DeptName", "内科");
+			testData.put("Titl", "科主任");
+			testData.put("cSex", "男");
+			testData.put("Tel", "18866668888");
+			retDat.add(testData);
+			if (inData.getUserName().equals("123")) {
+				responseW.setRet_code("0000");
+				responseW.setRet_msg("");
+				responseW.setRet_data(retDat);
+			} else {
+				responseW.setRet_code("9999");
+				responseW.setRet_msg("不存在此用户");
+			}
+
+		}
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		LoginOutDataBean outData = new LoginOutDataBean();
+		List responseWretData = responseW.getRet_data();
+		if (responseW.isSuccess()) {
+			try {
+				if(responseWretData.size()==0){
+					voResponse.setRet_code(Constains.ERROR_CODE);
+					voResponse.setRet_msg("用户名或密码错误");
+				}else{
+					Map data = (Map) responseWretData.get(0);
+					outData.setUserId(data.get("userId").toString());
+					outData.setName(data.get("name").toString());
+					outData.setHospitalName(data.get("hospitalName").toString());
+					outData.setDeptName(data.get("deptName").toString());
+					outData.setTitl(data.get("titl").toString().trim());
+					outData.setcSex(data.get("cSex").toString());
+					outData.setAge("");
+					outData.setTelephone(data.get("telephone").toString());
+					voResponse.setRet_count(1);
+					voResponse.setRet_code(Constains.SUCCESS_CODE);
+					voResponse.setRet_msg(Constains.SUCCESS_MSG);
+					voResponse.setRet_data(outData);
+					if(inData.getDeviceTokens()!=null&&!inData.getDeviceTokens().equals("")){
+						//IOS登录用户，将推送客户端进行更新
+						Client client=ClientManager.getClient(outData.getUserId());
+						if(client!=null&&client.getAppType().equals(socket.service.appMessage.Constains.IOS)&&client.getAppId().equals(inData.getDeviceTokens())){
+							//如果是同一手机则不作处理
+						}else if(client==null){
+							//如果是client是空，则进行初始化
+							ClientManager.put(outData.getUserId(),socket.service.appMessage.Constains.IOS,inData.getDeviceTokens());
+						}						
+					}
+				}
+				
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常：" + e.getMessage());
+			}
+
+		} else {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("重连失败：" + responseW.getRet_msg());
+		}
+
+		HttpResponseUtil.response(voResponse, response);
+
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException
+	 *             if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+		String packageName = ReConnectServlet.class.getPackage().getName();
+		if (packageName.indexOf("test.") >= 0)
+			test = true;
+	}
+
+}

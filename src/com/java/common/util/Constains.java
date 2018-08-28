@@ -1,0 +1,11 @@
+package common.util;
+
+public class Constains {
+	/***
+	 * 成功代码
+	 */
+	public final static String SUCCESS_CODE="0000";
+	public final static String SUCCESS_MSG="成功";
+	
+	public final static String ERROR_CODE="9999";
+}

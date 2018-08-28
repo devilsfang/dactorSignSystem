@@ -1,0 +1,110 @@
+package com.java.servlet.command;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.java.common.util.Constains;
+import com.java.common.util.HttpResponseUtil;
+import com.java.common.vo.VoResponse;
+import com.java.plugins.winning.inpatient.service.QueryDocListService;
+import com.java.plugins.winning.inpatient.service.QueryPatientService;
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+import com.java.servlet.inDataBean.QueryPatientInDataBean;
+import com.java.servlet.inDataBean.QueryRecordInDataBean;
+import com.java.servlet.outDataBean.QueryPatientOutDataBean;
+import com.java.servlet.outDataBean.QueryRecordOutDataBean;
+
+/**
+ * Servlet implementation class QueryPatientServlet
+ */
+@WebServlet("/QueryPatient")
+public class QueryPatientServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public QueryPatientServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		QueryPatientInDataBean inData = new QueryPatientInDataBean();
+		inData.setPatientName(request.getParameter("PatientName"));
+		inData.setPatientCode(request.getParameter("patientcode"));
+		/*
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("cPatient", inData.getPatientName());
+		param.put("cPatienthode", inData.getPatientCode());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		WinningResponse responseW = QueryPatientService.QueryPatient(requestW);
+
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		List retData = new ArrayList();
+		Map responseWretData = responseW.getRetData();
+		VoResponse voResponse = new VoResponse();
+		if (responseW.isSuccess()) {
+			try {
+				for (int i = 0; i < 3; i++) {
+					QueryPatientOutDataBean outData = new QueryPatientOutDataBean();
+					outData.setPatientName(responseWretData.get("cPatientName").toString());
+					outData.setPatientCode(responseWretData.get("cPatientCode").toString());
+					outData.setPatientSex(responseWretData.get("patientSex").toString());
+					outData.setPatientAge(responseWretData.get("patientAge").toString());
+					retData.add(outData);
+				}
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(retData);
+				voResponse.setRet_count(retData.size());;
+
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常：" + e.getMessage());
+			}
+
+		} else {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:" + responseW.getRetMsg());
+		}
+
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+}

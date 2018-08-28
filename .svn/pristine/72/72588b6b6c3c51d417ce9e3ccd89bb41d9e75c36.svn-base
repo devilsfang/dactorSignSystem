@@ -1,0 +1,9 @@
+LoginUrl=http://192.168.1.119:8024/api/WebApi/WN_Welcom
+TreeUrl=http://192.168.1.119:8024/api/WebApi/WN_PatTree
+SignDetailUrl=http://192.168.1.119:8024/api/WebApi/WN_CaseContent
+PatientDetailUrl=http://192.168.1.119:8024/api/WebApi/WN_CaseContent
+QueryPatientUrl=http://192.168.1.119:8024/api/WebApi/WN_Retrieval
+QueryRecordUrl=http://192.168.1.119:8024/api/WebApi/WN_CheckRecord
+SignHistoryOpinionUrl=http://192.168.1.119:8024/api/WebApi/WN_CheckRecordHistory
+SignOpnionFillUrl=http://192.168.1.119:8024/api/WebApi/WN_ExaminationApproval
+QueryDocListUrl=http://192.168.1.119:8024/api/WebApi/WN_CheckList

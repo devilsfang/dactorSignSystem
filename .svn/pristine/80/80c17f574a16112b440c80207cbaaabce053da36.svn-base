@@ -1,0 +1,10 @@
+BaseUrl=http://192.168.1.119/dssweb/
+AppMessagePort=8071
+AppVersion=1.0
+AppInstallUrl=apk/dssApp.apk
+ApkUrl=http:xxxxx
+Config=null
+CopyRight=\u5C71\u897F\u536B\u5B81\u8F6F\u4EF6\u6709\u9650\u516C\u53F8
+CallForHelp=0351-8888888,18866688
+CallForContact=0351-666666;
+AddrForContact=xxxxxxxx;

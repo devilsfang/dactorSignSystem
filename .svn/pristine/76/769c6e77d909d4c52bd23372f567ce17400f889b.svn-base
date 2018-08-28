@@ -1,0 +1,92 @@
+package test.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.PatientAdviceInDataBean;
+import servlet.inDataBean.SignDetailInDataBean;
+import servlet.outDataBean.PatientAdviceOutDataBean;
+import servlet.outDataBean.SignDetailOutDataBean;
+
+/**
+ * Servlet implementation class PatientAdviceServlet
+ */
+@WebServlet("/test/PatientAdvice")
+public class PatientAdviceServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public PatientAdviceServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		PatientAdviceInDataBean inData=new PatientAdviceInDataBean();
+		inData.setPatientCode(request.getParameter("patientCode"));
+
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("cPatientCode", inData.getPatientCode());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		WinningResponse responseW = QueryDocListService.QueryDocList(requestW);
+
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		PatientAdviceOutDataBean outData = new PatientAdviceOutDataBean();
+		Map responseWretData = responseW.getRetData();
+		VoResponse voResponse=new VoResponse();
+		if(responseW.isSuccess()){
+			try{
+				outData.setAdvice(responseWretData.get("Advice").toString());
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(outData);
+			}catch(Exception e){
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:"+responseW.getRetMsg());
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+}

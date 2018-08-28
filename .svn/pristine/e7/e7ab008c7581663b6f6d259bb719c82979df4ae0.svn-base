@@ -1,0 +1,20 @@
+package com.java.plugins.winning.inpatient.vo;
+
+public class WinningResponse {
+	private String appId;
+	private String url;
+	public String getAppId() {
+		return appId;
+	}
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	
+	
+}

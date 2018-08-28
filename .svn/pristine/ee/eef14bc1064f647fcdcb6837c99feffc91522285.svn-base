@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="GBK" ?>    
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" 
+    "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd" >
+<log4j:configuration>
+
+	<!-- 控制台日志 -->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="ImmediateFlush" value="true"/>
+		<param name="Threshold" value="DEBUG"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%p][%C{1} Line:%L] %m%n"/>
+		</layout>
+	</appender>
+	
+	<!-- 运行时日志，按天输出到文件 -->
+	<appender name="DSSWEB" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="Threshold" value="DEBUG"/>
+		<param name="ImmediateFlush" value="true"/>
+		<param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+		<param name="File" value="/home/DSSWEB/logs/DSSWEB.log"/>
+		<param name="encoding" value="UTF-8"/>
+		<param name="Append" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%p][%C{1} Line:%L] %m%n"/>
+		</layout>
+	</appender>
+	
+	<!-- 错误日志，按天输出到文件 -->
+	<appender name="DSSWEB_ERR" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="Threshold" value="ERROR"/>
+		<param name="ImmediateFlush" value="true"/>
+		<param name="DatePattern" value="'_'yyyy-MM-dd'.log'"/>
+		<param name="File" value="/home/dssweb/logs/dssweb_Error.log"/>
+		<param name="encoding" value="UTF-8"/>
+		<param name="Append" value="true"/>
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%p][%c] %m%n"/>
+		</layout>
+	</appender>
+	
+	<!-- 普通类日志记录器 -->
+	<logger name="com.DSSWEB" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="DSSWEB"/>
+		<appender-ref ref="DSSWEB_ERR"/>
+	</logger>
+		
+	<!-- 普通类日志记录器 -->
+	<logger name="nl.justobjects.pushlet" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="DSSWEB"/>
+		<appender-ref ref="DSSWEB_ERR"/>
+	</logger>
+	
+	<!-- HTTP 类日志记录器 -->
+	<logger name="org.apache.http" additivity="false">
+		<level value="ERROR" />
+		<appender-ref ref="CONSOLE"/>
+		<appender-ref ref="DSSWEB_ERR"/>
+	</logger>
+	
+	<root>
+		<appender-ref ref="CONSOLE"/> 
+		<appender-ref ref="DSSWEB"/>
+		<appender-ref ref="DSSWEB_ERR"/>
+	</root>
+</log4j:configuration>

@@ -1,0 +1,80 @@
+@CHARSET "UTF-8";
+body{
+	background-color:#FFF;
+	margin:0;
+	}
+#downloadBar {
+	height: 57px;
+	width: 100%;
+	background-color: #ebebeb;
+}
+#winningImage {
+	float: left;
+	height: 57px;
+	width: 147px;
+}
+#wnImage {
+	height: 57px;
+}
+#step{
+	width:190px;
+	height:60px;
+	line-height:60px;
+	margin:0px auto;
+	font-size:23px;
+}
+#blendStep{
+    width:140px;
+	height:60px;
+	line-height:60px;
+	margin:0px auto;
+	font-size:23px;
+}
+.word{
+	margin:0px auto;
+	width:310px;
+	height:32px;
+	font-size:12px;
+	font-weight:bold;
+}
+#imgFirst{
+	width:102px;
+	height:200px;
+	margin:0px auto;
+	margin-top: 10px;
+}
+.img{
+	width:100px;
+	height:180px;
+}
+#imgSecond{
+	width:101px;
+	height:200px;
+	margin:0px auto;
+	margin-top: 10px;
+}
+#imgThird	{
+	width:207px;
+	height:200px;
+	margin:0px auto;
+	margin-top: 10px;
+}
+#imgForth{
+	width:207px;
+	height:200px;
+	margin:0px auto;
+	margin-top: 10px;
+}
+#imgFif{
+	width:101px;
+	height:200px;
+	margin:0px auto;
+	margin-top: 10px;
+}
+.stepWord{
+	width:135px;
+	height:30px;
+	color:#3ebde7;
+	font-size:22px;
+	margin:0px auto;
+}

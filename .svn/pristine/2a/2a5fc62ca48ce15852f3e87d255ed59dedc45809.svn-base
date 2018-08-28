@@ -1,0 +1,244 @@
+body {
+	margin: 0px;
+	background-color: #EEEEEE;
+}
+.topbox{
+	height: 80px;
+	width: 100%;
+	border-bottom-width: 5px;
+	border-bottom-style: solid;
+	border-bottom-color: #7b7b7a;
+	background-color: #FFFFFF;
+}
+.centerbox{
+	/*中秋
+	background-color: #ab0101;*/
+	/*欢迎使用*/
+	background-color: #38578e;
+	height: 500px;
+	width: 100%;
+	/*中秋
+	background-image: url(../images/login/login002.jpg);*/
+	/*欢迎使用*/
+	background-image: url(../images/login/login001.jpg);
+	background-repeat: no-repeat;
+	background-position: center top;
+}
+.footbox{
+	width: 100%;
+	border-top-width: 3px;
+	border-top-style: solid;
+	border-top-color: #7b7b7a;}
+.foot{
+	width: 950px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	font-size: 12px;
+	line-height: 24px;
+	color: #666666;
+	text-align: center;
+	font-family: "微软雅黑", "黑体";
+	padding-top: 10px;
+}
+.foot a{
+	color: #333;
+	text-decoration: none;
+}
+.top{
+	height: 80px;
+	width: 950px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+.top_text{
+	position: relative;
+	height: 80px;
+	width: 598px;
+	top: -80px;
+	left: 222px;
+	line-height: 20px;
+	font-size: 14px;
+	font-family: "微软雅黑", "黑体";
+}
+.logo{
+	height: 72px;
+	width: 250px;
+	border-bottom-width: 5px;
+	border-bottom-style: solid;
+	border-bottom-color: #f7ef00;
+	padding-top: 8px;
+	padding-left: 45px;
+}
+.logo2{
+	height: 40px;
+	width: 40px;
+	float: left;
+}
+.center{
+	height: 500px;
+	width: 950px;
+	margin-top: 0px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+	position: relative;
+}
+.images{
+	height: 500px;
+	width: 950px;
+	overflow: hidden;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: #333333;
+}
+.images img{}
+.login{
+	height: 380px;
+	width: 320px;
+	position: absolute;
+	top: 50px;
+	right: 20px;
+	padding: 10px;
+	border-radius: 3px;
+	box-shadow: 0px 0px 5px rgba(0,0,0,0.4);
+	-webkit-box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+	-moz-box-shadow:0px 0px 5px rgba(0,0,0,0.4);
+	background-image: url(../images/login/602.png);
+	background-repeat: repeat;
+}
+.logtitle{
+	line-height: 38px;
+	font-size: 20px;
+	font-family: "微软雅黑", "黑体";
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-top: 0px;
+	margin-bottom: 20px;
+	float: left;
+	width: 270px;
+	margin-left: 10px;
+}
+.inputs{
+	height: 250px;
+	width: 300px;
+	padding-left: 30px;
+	display: block;
+	position: absolute;
+	top: 160px;
+	right: 20px;
+}
+.inputs .input{
+	height: 30px;
+	width: 220px;
+	font-size: 16px;
+	line-height: 30px;
+	font-weight: bold;
+	border: 1px solid #999999;
+	margin-bottom: 20px;
+	background-image: url(../images/login/logins.png);
+	background-repeat: no-repeat;
+	background-color: #FFFFFF;
+	float: left;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-left: 0px;
+	padding-top: 3px;
+	padding-right: 3px;
+	padding-bottom: 3px;
+	padding-left: 33px;
+}
+.inputs label{
+	float: left;
+	height: 24px;
+	width: 200px;
+	font-size: 16px;
+	line-height: 24px;
+	font-weight: bold;
+	color: #FFFFFF;
+	display: block;
+	cursor: pointer;
+}
+#checkbox{
+	float: left;
+	height: 18px;
+	width: 18px;
+	padding: 0px;
+	display: block;
+	border: 1px solid #fff;
+	margin-top: 2px;
+	margin-right: 7px;
+	margin-bottom: 7px;
+	margin-left: 0px;
+}
+.input:hover{
+	border: 1px solid #FFFF00;
+}
+.input:focus{
+	border: 1px solid #FFFF00;
+}
+.inputs a{
+	height: 36px;
+	width: 255px;
+	display: block;
+	float: left;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 36px;
+	background-color: #09a3dc;
+	color: #FFFFFF;
+	text-decoration: none;
+	text-align: center;
+	font-family: "微软雅黑", "黑体";
+	margin-top: 15px;
+	border-radius: 5px;
+}
+.inputs a:hover{
+	background-color: #3cc3f5;
+}
+.inputs a:active{
+	background-color: #098cbc;
+}
+.com{
+	position: absolute;
+	height: 400px;
+	width: 411px;
+	top: 60px;
+	right: 0px;
+}
+.com .comtitle{
+	background-image: url(../images/login/title.png);
+	background-repeat: no-repeat;
+	height: 78px;
+	width: 361px;
+	padding-left: 50px;
+	padding-top: 5px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	overflow: hidden;
+	
+}
+.com .conner{
+	background-image: url(../images/login/conner.png);
+	background-repeat: no-repeat;
+	height: 20px;
+	width: 100%;
+	float: left;
+	background-position: right 0px;
+	overflow: visible;
+	margin-top: -3px;
+}
+.comlogo{
+	background-image: url(../images/login/house.png);
+	background-repeat: no-repeat;
+	height: 110px;
+	width: 200px;
+	background-position: left bottom;
+	position: absolute;
+	top: 340px;
+	right: 233px;
+}

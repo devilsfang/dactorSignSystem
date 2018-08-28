@@ -1,0 +1,75 @@
+#opinion {
+	position: absolute;
+	left: 10px;
+	right: 10px;
+	top: 28px;
+	bottom: 145px;
+}
+#doctor{
+	float:left;
+	width:50%;
+	height:55px;
+	text-align:center;
+	}
+#phone{
+	float:right;
+	width:50%;
+	height:55px; 
+	text-align:center;
+	}
+#bottomContainer {
+	height: 118px;
+	position: absolute;
+	width:90%;
+	padding:10px 5%;
+	bottom: 0px;
+	background-color:#fff;
+z-index: 11;
+display:none;
+}
+#opinionPage{
+	background-color:#fff;
+}
+#opion{
+	border:solid 1px #ccc;
+	margin-top:15px;
+}
+#empty {
+	text-align: center;
+	line-height: normal;
+	width: 50%;
+	height: 37px;
+	background-color: #dde5e8;
+	float: left;
+	padding-top: 15px;
+	font-size:15px;
+}
+#submit {
+	text-align: center;
+	width: 50%;
+	height: 37px;
+	background-color: #78c1ea;
+	float: right;
+	padding-top: 15px;
+    font-size:15px;
+}
+
+.exitOp{
+	width:30px;
+	height:30px;
+	background-image: url("/dssweb/resource/images/icon/close_1.png");
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 20px;
+	position: absolute;
+	top:20px;
+	right:20px;
+	z-index: 9;
+	
+}
+#opinionPagec td{
+	background-color: #fff;
+}
+#opinionPageopion{
+	background-color: #fff;
+}

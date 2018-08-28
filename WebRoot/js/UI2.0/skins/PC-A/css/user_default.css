@@ -1,0 +1,239 @@
+.jp-container {
+	background-color: #fff;
+}
+
+.l-page-bottom-border:before {
+	border: none;
+}
+
+.l-page-group tr:hover {
+	background-color: #fff;
+}
+
+.l-row-button {
+	background-color: #ebfcfa;
+	color: #08c2ad;
+	border-color: #08c2ad;
+	float: none;
+	width: 70%;
+	max-width: 350px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+	margin: 20px auto;
+}
+
+.l-row-button:hover {
+	background-color: #d1faf5;
+	color: #079484;
+	border-color: #079484;
+}
+
+#wx {
+	background-image:
+		url(/dssweb/js/UI2.0/skins/PC-A/images/default/weixin_1.png);
+	background-repeat: no-repeat;
+	background-size: 30px;
+	background-position: 20 15;
+	background-color: #079484;
+	padding-left: 60px;
+	padding-top: 10px;
+	text-align: left;
+	height: 35px;
+}
+
+#wxgzh {
+	color: #b9f3ec;
+	font-size: 14px;
+	line-height: 18px;
+}
+
+#wxrz {
+	color: #f4b606;
+	font-size: 10px;
+	line-height: 12px;
+}
+
+#head {
+	background-color: #079484;
+	height: auto;
+}
+
+#head img {
+	width: 100%;
+	max-width: 420px;
+}
+
+#head span {
+	display: block;
+	text-align: center;
+	line-height: 2em;
+	font-size: 16px;
+	color: #fff;
+}
+
+#map {
+	background-color: #079484;
+	height: auto;
+}
+
+#map img {
+	max-width: 420px;
+	width: 100%;
+}
+
+#map2 {
+	background-color: #fff;
+	height: auto;
+}
+
+#map2 img {
+	max-width: 420px;
+	width: 100%;
+}
+
+#userInfo {
+	max-width: 420px;
+	width: 75%;
+	margin: 0px auto;
+	padding: 0px 3%;
+	height: 85px;
+	border-bottom: solid 3px #f3f3f3;
+	position: relative;
+	z-index: 2;
+}
+
+#userInfo span {
+	line-height: 70px;
+	font-size: 24px;
+	font-weight: 600;
+	display: block;
+	float: left;
+	margin-right: 10px;
+	margin-left: 10px;
+}
+.userInfo{
+	
+	margin: 5px 0px;
+    border-bottom: 1px #e8e8e8 solid;
+    display: block;
+    height: 80;
+        overflow: hidden
+}
+.userInfo span{
+	display:block;
+	font-size:16px;
+	line-height: 24px;
+	margin:10px;
+	
+}
+#userInfo img ,.userInfo img{
+	width: 60px;
+	border: solid 5px #f3f3f3;
+	border-radius: 10px;
+	display: block;
+	float: left;
+}
+
+#percent {
+	width: 54px;
+	height: 54px;
+	float: right;
+	line-height: 44px;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+.circle {
+	background: #f58207;
+}
+
+.circle #txt {
+	font-size: 10px;
+	padding-top: 56px;
+	line-height: 12px;
+	width: 54px;
+	text-align: certen;
+}
+
+.circle_left, .circle_right {
+	background: #e0ddde;
+}
+
+.circle_right, .clip_right {
+	clip: rect(0, auto, auto, 27);
+}
+
+.circle_left, .clip_left {
+	clip: rect(0, 27, auto, 0);
+}
+
+#check {
+	width: 280px;
+	margin: 0px auto;
+	background-image:
+		url(/dssweb/js/UI2.0/skins/PC-A/images/default/check_1.jpg);
+	background-repeat: no-repeat;
+	background-size: 20px;
+	background-position: 10 4;
+	padding-left: 10px;
+}
+
+#check span {
+	z-index: 2;
+	position: relative;
+	font-size: 14px;
+	line-height: 32px;
+	color: #333;
+}
+
+#smT {
+	font-size: 24px;
+	line-height: 48px;
+	font-weight: 600;
+}
+
+#smB {
+	padding: 0 20px;
+}
+
+#smB p {
+	margin-top: 10px;
+	text-align: left;
+	text-indent: 2em;
+	font-size: 14px;
+	line-height: 1.5em;
+	font-weight: 400;
+}
+
+.h3 {
+	color: #333;
+	margin: 0px 10px;
+	display: block;
+}
+
+.t1 {
+	margin-top: 12px;
+	text-align: center;
+	display: block;
+	line-height: 28px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.t2 {
+	line-height: 28px;
+	font-weight: 600;
+}
+#redPoint{
+	background-color: red;
+	color:#fff;
+	font-size: 10px;
+    line-height: 20px;
+    border-radius: 10px;
+    position: absolute;
+    bottom: 15px;
+    left: 65px;
+    width: 20px;
+    height: 20px;
+}

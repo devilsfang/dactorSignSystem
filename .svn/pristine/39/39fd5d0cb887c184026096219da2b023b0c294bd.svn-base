@@ -1,0 +1,54 @@
+package com.java.plugins.winning.inpatient.vo;
+
+public class WinningResponse {
+	private String appId;
+	private String url;
+	private String StaffName;
+	private String HospitalName;
+	private String DeptName;
+	private String TiTl;
+	private String cSex;
+	public String getAppId() {
+		return appId;
+	}
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getStaffName() {
+		return StaffName;
+	}
+	public void setStaffName(String staffName) {
+		StaffName = staffName;
+	}
+	public String getHospitalName() {
+		return HospitalName;
+	}
+	public void setHospitalName(String hospitalName) {
+		HospitalName = hospitalName;
+	}
+	public String getDeptName() {
+		return DeptName;
+	}
+	public void setDeptName(String deptName) {
+		DeptName = deptName;
+	}
+	public String getTiTl() {
+		return TiTl;
+	}
+	public void setTiTl(String tiTl) {
+		TiTl = tiTl;
+	}
+	public String getcSex() {
+		return cSex;
+	}
+	public void setcSex(String cSex) {
+		this.cSex = cSex;
+	}
+	
+}

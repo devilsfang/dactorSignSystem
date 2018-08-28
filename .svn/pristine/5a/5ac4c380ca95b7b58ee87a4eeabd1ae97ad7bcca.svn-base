@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<meta charset="UTF-8">
+<title>掌上医生审签系统操作说明</title>
+<link href="css/operationNotice.css" rel="stylesheet" type="text/css">
+<script src="/dssweb/js/desktop/jquery/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/operationNotice.js"></script>
+</head>
+<body>
+	<div id="downloadBar">
+		<div id="winningImage">
+			<image id="wnImage"
+				src="/dssweb/resource/images/download/downloadBar.gif">
+		</div>
+	</div>
+	<div id="downloadMiddle">
+		<div id="signImage">
+			<image id="sgImage" src="/dssweb/resource/images/download/sign.gif">
+			<div id="downLoad">
+				<span>立即下载</span>
+			</div>
+		</div>
+	</div>
+
+	<!-- 操作说明 -->
+
+	<div id="notice">
+		<div id="noticeWord" class="noticeWord">操作说明:</div>
+		<div id="noticeFirst" class="noticeStep">1.下载与安装</div>
+		<div id="noticeSecond" class="noticeStep">2.用户登录</div>
+		<div id="noticeThird" class="noticeStep">3.医网签认证证书管理</div>
+		<div id="noticeForth" class="noticeStep">4.待审签内容的签名和驳回</div>
+		<div id="noticeFifth" class="noticeStep">5.已审签内容的查询</div>
+	</div>
+
+	<!--下载与安装  -->
+
+	<div id="downLoadNotice">
+		<div name="return" class="noticeWord">
+			<返回 操作说明:
+		</div>
+		<div class="title">下载与安装</div>
+		<div class="word">1.请点击上方“立即下载”按钮进入下载页面</div>
+		<div id="imgFirst">
+			<image class="img"
+				src="/dssweb/resource/images/download/download.png">
+		</div>
+	</div>
+
+	<!-- 用户登录 -->
+
+	<div id="userLogin">
+		<div name="return" class="noticeWord">
+			<返回 操作说明:
+		</div>
+		<div id="loginTitle" class="title">用户登录</div>
+		<div class="word">1.打开App，点击开始使用按钮</div>
+		<div id="imgFirst">
+			<image class="img" src="/dssweb/resource/images/download/start.jpg">
+		</div>
+		<div class="word">2.输入医生站的工号，以及对应的密码</div>
+		<div id="imgFirst">
+			<image class="img" src="/dssweb/resource/images/download/login.jpg">
+		</div>
+	</div>
+
+	<!-- 医网签认证证书管理  -->
+	
+	<div id="certificate">
+		<div name="return" class="noticeWord">
+			<返回 操作说明:
+		</div>
+		<div id="certificateTitle" class="title">医网签认证证书管理</div>
+	</div>
+	
+	<!-- 待审签内容的签名和驳回  -->
+	
+	<div id="doclist">
+		<div name="return" class="noticeWord">
+			<返回 操作说明:
+		</div>
+		<div id="doclistTitle" class="title">待审签内容的签名和驳回</div>
+	</div>
+	
+	<!-- 已审签内容的查询  -->
+	
+	<div id="record">
+		<div name="return" class="noticeWord">
+			<返回 操作说明:
+		</div>
+		<div id="recordTitle" class="title">已审签内容的查询</div>
+		<div class="word">1.当您打开APP,将进入审签记录的界面，显示当前用户的已审签记录列表</div>
+		<div id="imgFirst">
+			<image class="img" src="/dssweb/resource/images/download/record.jpg">
+		</div>
+		<div class="word">2.点击两边的箭头可以查看前一天和后一天的审签记录，点击时间可以进入时间选择器</div>
+		<div id="imgSecond">
+			<image class="img" src="/dssweb/resource/images/download/select.jpg">
+			<image class="img" src="/dssweb/resource/images/download/selecter.jpg">
+		</div>
+		<div class="word">3.点击左边头像可以查看患者的基本信息，在基本信息页面，点击左上方箭头返回上级页面，点击字号可以调整大小，点击左下角的导航收放按钮可以对导航进行收放显示操作</div>
+		<div id="imgSecond">
+			<image class="img" src="/dssweb/resource/images/download/detail.jpg">
+			<image class="img" src="/dssweb/resource/images/download/info.jpg">
+		</div>
+		<div class="word">4.点击右方区域可以查看审签记录的详情</div>
+		<div id="imgSecond">
+			<image class="img" src="/dssweb/resource/images/download/signDetail.jpg">
+			<image class="img" src="/dssweb/resource/images/download/recordDetail.jpg">
+		</div>
+		<div class="word">5.点击“住院记录”,"历史审批",“患者详情”可以查看相应的信息</div>
+		<div id="imgThird">
+			<image class="img" src="/dssweb/resource/images/download/recordDetail.jpg">
+			<image class="img" src="/dssweb/resource/images/download/history.jpg">
+			<image class="img" src="/dssweb/resource/images/download/patientDetail.jpg">
+		</div>
+	</div>
+	<div id="copyRight">
+  <div id="wnCopyRight"><span>©山西卫宁软件有限公司</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+// JavaScript Document
+$(function() {
+	     checkSystem();
+
+}); 
+
+function checkSystem(){
+         var u = navigator.userAgent;
+         if (u.indexOf("Android") > -1 || u.indexOf("Linux") >-1)
+             {
+        	     var reg = /android [\d._]+/gi;
+                 var v_info = u.match(reg);
+                 version = (v_info + "").replace(/[^0-9|_.]/ig, "").replace(/_/ig, "."); //得到版本号4.2.2
+                 version = parseInt(version.split('.')[0]);// 得到版本号第一位
+                 if(version>=4){
+				 $("#andrioDownloadButton").css("display","block");
+				 $("#appleDownloadButton").css("display","none");
+				 $("#downloadInformation").css("visibility","visible");
+				 $("#blendDownloadButton").css("display","none");
+                 }else{
+                 
+                 }
+
+				 
+             }
+             else if(u.indexOf("iPhone") > -1)
+             {
+                    
+                $("#andrioDownloadButton").css("display","none");
+			    $("#appleDownloadButton").css("display","block");
+				$("#downloadInformation").css("visibility","hidden");
+				$("#blendDownloadButton").css("display","none");
+             }
+			 else{
+				 $("#andrioDownloadButton").css("display","none");
+    			 $("#appleDownloadButton").css("display","none");
+    			 $("#downloadInformation").css("visibility","visible");
+    			 $("#blendDownloadButton").css("display","block");
+				 }
+	}

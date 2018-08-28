@@ -1,0 +1,39 @@
+package plugins.winning.inpatient.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import common.util.Constains;
+import common.util.HttpRequestUtil;
+import plugins.winning.WinnigConfig;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+public class QueryDocListService {
+
+	public static WinningResponse QueryDocList(WinningRequest request){
+		WinningResponse response=new WinningResponse();
+		
+//		JSONObject json=HttpRequestUtil.httpGet(WinnigConfig.getInstance().QueryDocListUrl, request.getParam(),true);
+		String strResult="{\"ret_code\":\"0000\",\"ret_msg\":\"成功\",\"ret_count\":2,\"ret_data\":[{\"cPatientName\":\"张丽\",\"cPatientCode\":\"221654\",\"PatSex\":\"女\",\"PatAge\":\"39岁\",\"iBookId\":3,\"cBookName\":\"住院记录\",\"RequestTime\":\"2018-07-08T16:21:22\",\"RequestDept\":\"产科\",\"RequestTitl\":\"副主任医师 \"},{\"cPatientName\":\"张丽\",\"cPatientCode\":\"221654\",\"PatSex\":\"女\",\"PatAge\":\"39岁\",\"iBookId\":3,\"cBookName\":\"住院记录\",\"RequestTime\":\"2018-07-08T16:50:37\",\"RequestDept\":\"产科\",\"RequestTitl\":\"副主任医师 \"}]}";
+		JSONObject json=JSONObject.fromObject(strResult);
+		
+		if(json==null){
+			response.setRet_code(Constains.ERROR_CODE);
+			response.setRet_msg("网络访问异常");
+		}else{
+			JSONArray ja=json.getJSONArray("ret_data");
+			List<Map> data=JSONArray.toList(ja, new HashMap(), new JsonConfig());
+			response=(WinningResponse) JSONObject.toBean(json, WinningResponse.class);
+			response.setRet_data(data);
+		}
+			
+		return response;
+		
+	}
+}

@@ -1,0 +1,230 @@
+package socket.service.appMessage;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import socket.beans.InDataBean;
+import socket.beans.SocketWriteBean;
+import socket.util.LoUtils;
+
+public class AppMessageSocketService {
+
+	private static Log log = LogFactory.getLog(AppMessageSocketService.class);
+	protected static LinkedBlockingQueue<String> readQueue;
+	protected static LinkedBlockingQueue<SocketWriteBean> writeQueue;
+	protected static Map<String, SocketWriteBean> adapterMap;// 应答适配器，用于异步处理应答消息
+	private boolean connected = false;// 关闭连接
+	private Socket socket;
+	private String appId;
+
+	/**
+	 * 初始化方法 相当于是客户端初始化
+	 * 
+	 * @see com.forward.proxy.service.ServiceThread#init(java.net.Socket)
+	 */
+	public void init(final Socket socket) {
+		this.socket = socket;
+		readQueue = new LinkedBlockingQueue(20);
+		writeQueue = new LinkedBlockingQueue(20);
+		adapterMap = new HashMap<String, SocketWriteBean>();
+		log.info("Socket接入：" + socket.getInetAddress().getHostAddress() + ":" + socket.getPort());
+		new ListenThread(socket).start();
+		new SenderThread(socket).start();
+		new CommandThread().start();
+	}
+
+	/***
+	 * 处理收到的数据
+	 */
+	class CommandThread extends Thread {
+		public void run() {
+			while (connected) {
+				try {
+					String retStr = readQueue.take();
+					final InDataBean inData = new InDataBean(retStr);
+					new Thread(){
+						@Override
+						public void run() {
+							SocketWriteBean responseBean = AppMessageCommand.doRequest(inData, writeQueue,adapterMap,socket);
+							if (responseBean != null)
+								writeQueue.add(responseBean);
+						}
+					}.start();
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
+			}
+		}
+	}
+
+	/***
+	 * 发送数据发送器
+	 */
+	class SenderThread extends Thread {
+		private Socket socket;
+		private DataOutputStream dos = null;
+		protected static final int timeOut = 60000;// 60秒超时
+
+		public SenderThread(Socket socket) {
+			super();
+			this.socket = socket;
+
+			try {
+				this.socket.setSoTimeout(timeOut);
+				this.socket.setKeepAlive(true);
+				dos = new DataOutputStream(socket.getOutputStream());
+
+				connected = true;
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			while (connected) {
+				try {
+					SocketWriteBean request = writeQueue.take();
+					if(request==null) continue;
+					String requestStr = request.getRequestStr();
+					if(requestStr==null) continue;
+					log.info("send :"+requestStr);
+					// 发送给服务器的数据
+					requestStr = LoUtils.packHexMsgHeader2(requestStr);
+					dos.write(requestStr.getBytes());
+					dos.flush();
+					// 适配器增加map 用于等待接受数据
+					if (request.getId() != null)
+						adapterMap.put(request.getId(), request);
+					if(request.getRequestStr().startsWith(Constains.LogOut))
+						throw new Exception("旧的登陆已作废");
+				} catch (Exception e) {
+					e.printStackTrace();
+					try {
+						if (dos != null)
+							dos.close();
+						if (socket != null)
+							socket.close();
+						connected = false;
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 接收数据
+	 * 
+	 */
+	class ListenThread extends Thread {
+		private Socket socket;
+		private DataInputStream dis = null;
+		private static final int HEAD_LEN = 4;
+		private static final int BUFSIZE = 1024;
+
+		int recvMsgSize;// 报文长度
+		byte[] lenBuf = new byte[HEAD_LEN]; // 报文长度读取容器
+		protected static final int timeOut = 120000;// 5秒响应延迟
+
+		public ListenThread(Socket socket) {
+			super();
+			this.socket = socket;
+
+			try {
+				this.socket.setSoTimeout(timeOut);
+				this.socket.setKeepAlive(true);
+				dis = new DataInputStream(socket.getInputStream());
+
+				connected = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		public void run() {
+			while (connected) {
+				try {
+					int read = dis.read(lenBuf);
+					log.info("Read head length：" + read);
+					if (read != HEAD_LEN) {
+						// 记录读取报文出错
+						System.out.println("读取APP报文出错：读取报文长度出错");
+						throw new IOException("读取APP报文出错");
+					}
+					// 2.转报文长度
+					String lenStr = LoUtils.byte2HexStr(lenBuf);
+//					System.out.println("Package length[HEX]：" + lenStr);
+					lenStr =LoUtils.hexStr2Str(lenStr);
+//					System.out.println("Package length[HEX]：" + lenStr);
+					int packLen = 0;
+					try {
+						packLen = Integer.parseInt(lenStr.trim(), 16);
+//						System.out.println("Package length[OCT]: " + packLen);
+					} catch (Exception e) {
+						// 读取长度出错
+						continue;
+					}
+
+					// 3.根据报文长度读取数据
+					ByteArrayOutputStream baos = new ByteArrayOutputStream(packLen);
+					byte[] receiveBuff = new byte[BUFSIZE];
+					read = dis.read(receiveBuff);
+//					System.out.println("Read package length: " + read);
+					long readLen = 0;
+					Long startTime = new Date().getTime();
+					while (read != -1) {
+						Long nowTime = new Date().getTime();
+						if (nowTime - startTime > timeOut) {
+							break;
+						}
+						readLen += read;
+						baos.write(receiveBuff, 0, read);
+						if (readLen < packLen) {
+							read = dis.read(receiveBuff);
+						} else {
+							break;
+						}
+					}
+
+					if (readLen != packLen) {
+						// 读取报文出错，应读["+packLen+"],实读["+readLen+"]
+						log.info("读取APP报文出错:应读[" + packLen + "]字节,实读[" + readLen + "]字节");
+
+						continue;
+					}
+
+					String s = LoUtils.byte2HexStr(baos.toByteArray());
+					s=LoUtils.hexStr2Str(s);
+					baos.close();
+					log.info("App: " + s);
+					readQueue.add(s);
+				} catch (SocketException e) {
+					e.printStackTrace();
+					connected = false;
+				} catch (IOException e) {
+					e.printStackTrace();
+					connected = false;
+				}catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}

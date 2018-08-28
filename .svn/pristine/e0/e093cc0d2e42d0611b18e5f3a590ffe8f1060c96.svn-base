@@ -1,0 +1,78 @@
+package com.java.servlet.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.java.common.util.Constains;
+import com.java.common.util.HttpResponseUtil;
+import com.java.common.vo.VoResponse;
+import com.java.plugins.winning.inpatient.service.QueryDocListService;
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+import com.java.servlet.inDataBean.QueryRecordInDataBean;
+import com.java.servlet.inDataBean.VersonDetectionUpdateInDataBean;
+import com.java.servlet.outDataBean.QueryRecordOutDataBean;
+import com.java.servlet.outDataBean.VersionDetectionUpdateOutDataBean;
+
+/**
+ * Servlet implementation class versionDetectionUpdateServlet
+ */
+@WebServlet("/versionDetectionUpdateServlet")
+public class versionDetectionUpdateServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public versionDetectionUpdateServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		VersonDetectionUpdateInDataBean inData=new VersonDetectionUpdateInDataBean();
+		inData.setVersion(request.getParameter("version"));
+
+		VersionDetectionUpdateOutDataBean outData = new VersionDetectionUpdateOutDataBean();
+		VoResponse voResponse=new VoResponse();
+		if(inData.getVersion()!="1"){
+			try{
+				outData.setVersion("");
+				outData.setAddress("");
+				outData.setConfig(null);
+				voResponse.setRetCode(Constains.SUCCESS_CODE);
+				voResponse.setRetCode(Constains.SUCCESS_MSG);
+				voResponse.setRetData(outData);
+			}catch(Exception e){
+				voResponse.setRetCode(Constains.ERROR_CODE);
+				voResponse.setRetMsg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRetCode(Constains.ERROR_CODE);
+			voResponse.setRetMsg("访问异常:");
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+}

@@ -1,0 +1,98 @@
+package com.java.servlet.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.java.common.util.Constains;
+import com.java.common.util.HttpResponseUtil;
+import com.java.common.vo.VoResponse;
+import com.java.plugins.winning.inpatient.service.PatientDetailService;
+import com.java.plugins.winning.inpatient.service.QueryDocListService;
+import com.java.plugins.winning.inpatient.service.SignDetailService;
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+import com.java.servlet.inDataBean.PatientDetailInDataBean;
+import com.java.servlet.inDataBean.SignDetailInDataBean;
+import com.java.servlet.outDataBean.PatientDetailOutDataBean;
+import com.java.servlet.outDataBean.SignDetailOutDataBean;
+
+/**
+ * Servlet implementation class PatientDetailServlet
+ */
+@WebServlet("/PatientDetailServlet")
+public class PatientDetailServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public PatientDetailServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		PatientDetailInDataBean inData=new PatientDetailInDataBean();
+		inData.setPatientCode(request.getParameter("patientCode"));
+
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("cPatientCode", inData.getPatientCode());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		WinningResponse responseW = PatientDetailService.PatientDetail(requestW);
+
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		PatientDetailOutDataBean outData = new PatientDetailOutDataBean();
+		Map responseWretData = responseW.getRetData();
+		VoResponse voResponse=new VoResponse();
+		if(responseW.isSuccess()){
+			try{
+				outData.setTotalNum(responseWretData.get("totalNum").toString());
+				outData.setBookName(responseWretData.get("BookName").toString());
+				outData.setTextFormat("");
+				outData.setText(responseWretData.get("text").toString());
+				voResponse.setRetCode(Constains.SUCCESS_CODE);
+				voResponse.setRetCode(Constains.SUCCESS_MSG);
+				voResponse.setRetData(outData);
+			}catch(Exception e){
+				voResponse.setRetCode(Constains.ERROR_CODE);
+				voResponse.setRetMsg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRetCode(Constains.ERROR_CODE);
+			voResponse.setRetMsg("访问异常:"+responseW.getRetMsg());
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+}

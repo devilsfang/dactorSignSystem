@@ -1,0 +1,69 @@
+$(function() {
+	     methodBind();
+
+}); 
+function methodBind(){
+	$("#downLoad").click(function(){
+		 window.location.href="/dssweb/pages/download/download.html"
+		});
+	var notice=$("#notice");
+	var downLoadNotice=$("#downLoadNotice");
+	var userLogin=$("#userLogin");
+	var certificate=$("#certificate");
+	var doclist=$("#doclist");
+	var record=$("#record");
+	var returnN=$("*[name='return']");
+	var noticeFirst=$("#noticeFirst");
+	var noticeSecond=$("#noticeSecond");
+	var noticeThird=$("#noticeThird");
+	var noticeForth=$("#noticeForth");
+	var noticeFifth=$("#noticeFifth");
+	returnN.click(function(){
+		notice.css("display","block");
+		downLoadNotice.css("display","none");
+		userLogin.css("display","none");
+		certificate.css("display","none");
+		doclist.css("display","none");
+		record.css("display","none");
+		});
+	noticeFirst.click(function(){
+		notice.css("display","none");
+		downLoadNotice.css("display","block");
+		userLogin.css("display","none");
+		certificate.css("display","none");
+		doclist.css("display","none");
+		record.css("display","none");
+		});
+	noticeSecond.click(function(){
+		notice.css("display","none");
+		downLoadNotice.css("display","none");
+		userLogin.css("display","block");
+		certificate.css("display","none");
+		doclist.css("display","none");
+		record.css("display","none");
+		});
+	noticeThird.click(function(){
+		notice.css("display","none");
+		downLoadNotice.css("display","none");
+		userLogin.css("display","none");
+		certificate.css("display","block");
+		doclist.css("display","none");
+		record.css("display","none");
+		});
+	noticeForth.click(function(){
+		notice.css("display","none");
+		downLoadNotice.css("display","none");
+		userLogin.css("display","none");
+		certificate.css("display","none");
+		doclist.css("display","block");
+		record.css("display","none");
+		});
+	noticeFifth.click(function(){
+		notice.css("display","none");
+		downLoadNotice.css("display","none");
+		userLogin.css("display","none");
+		certificate.css("display","none");
+		doclist.css("display","none");
+		record.css("display","block");
+		});
+}

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<title>下载详情页</title>
+<link href="css/downloadDetail.css" rel="stylesheet" type="text/css">
+<script src="/dssweb/js/desktop/jquery/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/downloadDetail.js"></script>
+</head>
+<body>
+	<div id="downloadBar">
+		<div id="winningImage">
+			<image id="wnImage"
+				src="/dssweb/resource/images/download/downloadBar.gif">
+		</div>
+	</div>
+	<div id="step">安卓安装步骤说明</div>
+	<div class="word">
+		1、系统将自动显示您的手机操作系统版本，直接点击屏</br>幕中的安装按钮即可进入下载安装。
+	</div>
+	<div id="imgFirst">
+		 <image
+			class="img" src="/dssweb/resource/images/download/andriodFirst.png">
+	</div>
+	<div class="word">2、点击下载</div>
+	<div id="imgSecond"><image class="img"
+			src="/dssweb/resource/images/download/andriodSecond.jpg"></div>
+	<div class="word">3、点击下方菜单栏，点击下载管理，点击dssApp.apk安装</div>
+	<div id="imgThird"><image class="img"
+			src="/dssweb/resource/images/download/andriodThird.jpg">
+			<image class="img"
+			src="/dssweb/resource/images/download/andriodForth.jpg"></div>
+	<div class="word">4、在出现的安装界面，点击继续,出现正在安装界面</div>
+	<div id="imgForth"><image class="img"
+			src="/dssweb/resource/images/download/andriodFifth.jpg">
+			<image class="img"
+			src="/dssweb/resource/images/download/andriodSix.jpg"></div>
+    <div class="word">5、安装完成，打开App</div>
+	<div id="imgFif"><image class="img"
+			src="/dssweb/resource/images/download/andriodSeven.jpg"></div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+package servlet.inDataBean;
+
+public class SignOpinionFillInDataBean {
+	String bookId;
+	String checkId;
+	String checkContent;
+	public String getBookId() {
+		return bookId;
+	}
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+	public String getCheckId() {
+		return checkId;
+	}
+	public void setCheckId(String checkId) {
+		this.checkId = checkId;
+	}
+	public String getCheckContent() {
+		return checkContent;
+	}
+	public void setCheckContent(String checkContent) {
+		this.checkContent = checkContent;
+	}
+	
+
+}

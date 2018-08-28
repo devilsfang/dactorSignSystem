@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:wls="http://www.bea.com/ns/weblogic/90" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd http://www.bea.com/ns/weblogic/90 http://www.bea.com/ns/weblogic/90/weblogic-web-app.xsd">
+	<wls:context-root>dssweb</wls:context-root>
+    <wls:session-descriptor>
+	    <wls:persistent-store-type>replicated</wls:persistent-store-type>
+	    <wls:sharing-enabled>true</wls:sharing-enabled>
+	   	<wls:cookie-name>DSSWEVCOOKIE</wls:cookie-name>
+	</wls:session-descriptor>	
+	<wls:container-descriptor>  
+        <wls:show-archived-real-path-enabled>true</wls:show-archived-real-path-enabled>  
+	</wls:container-descriptor> 
+</wls:weblogic-web-app>

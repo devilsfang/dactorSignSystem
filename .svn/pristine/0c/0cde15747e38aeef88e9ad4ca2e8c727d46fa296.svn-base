@@ -1,0 +1,234 @@
+#amtInput {
+	text-align: right;
+}
+
+#userInfo span {
+	line-height: 28px;
+	font-size: 16px;
+}
+
+#menu {
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	height: 50px;
+	width: 50px;
+	background-color: #079484;
+	position: absolute;
+	z-index: 9;
+	line-height: 50px;
+	font-size: 14px;
+	color: #fff;
+	right: 10px;
+}
+
+#smT {
+	font-size: 24px;
+	line-height: 48px;
+	font-weight: 600;
+}
+
+#smB {
+	padding: 0 20px;
+}
+
+#smB p {
+	margin-top: 10px;
+	text-align: left;
+	text-indent: 2em;
+	font-size: 14px;
+	line-height: 1.5em;
+	font-weight: 400;
+}
+
+.bgp {
+	float: left;
+	width: 180px;
+	overflow: hidden;
+	margin: 5px;
+	position: relative;
+}
+
+.bgp span {
+	display: block;
+	font-size: 12px;
+	background-color: #e2effa;
+	color: #079484;
+	line-height: 24px;
+	width: 100px;
+	position: absolute;
+	transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	z-index: 2;
+	left: -24;
+	top: 10px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.bgp img {
+	float: left;
+	vertical-align: top;
+	width: 100%;
+	position: relative;
+	top: 0;
+}
+
+.lbt {
+	float: right;
+}
+
+.name {
+	overflow: hidden;
+	margin: 10px;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 40px;
+}
+
+.pro {
+	overflow: hidden;
+	margin: 0px 10px;
+	font-size: 12px;
+	line-height: 14px;
+}
+
+.addr {
+	margin: 10px;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.cont {
+	text-align: left;
+}
+
+.unknow {
+	color: #ccc;
+	height: 50px;
+	overflow: hidden;
+	box-shadow: -2px -2px 2px 1px #ccc;
+}
+
+.unknow .lbt {
+	color: #ccc;
+}
+
+.h2 {
+	font-weight: 200;
+	font-size: 14px;
+	line-height: 30px;
+	color: #000;
+}
+
+.h3 {
+	font-weight: 600;
+	line-height: 30px;
+	font-size: 20px;
+	color: #169fd6;
+	margin-bottom: 5px;
+	display: block;
+}
+
+.h4 {
+	color: #999;
+	line-height: 16px;
+}
+
+.ph_h1 {
+	line-height: 40px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.ph_h2 {
+	line-height: 40px;
+	font-size: 14px;
+	font-weight: 200;
+}
+
+.phBox {
+	background-color: #079484;
+}
+
+.phTop {
+	height: 140px;
+	width: 310px;
+	background-color: #fff;
+	border-radius: 10px;
+	margin: 0px auto 50px auto;
+	position: relative;
+	top: 30px;
+}
+
+.phTop div {
+	float: left;
+	overflow: hidden;
+	background-repeat: no-repeat;
+	background-size: 100%;
+}
+
+.phTop span {
+	font-size: 12px;
+	line-height: 16px;
+	display: block;
+	text-align: center;
+}
+
+.phTop .money {
+	margin-top: 10px;
+	font-size: 16px;
+	font-weight: 600px;
+	line-height: 90px;
+	color: #ee7f7f;
+}
+
+.phTop1 {
+	width: 40%;
+	background-position: center 3px;
+	background-image:
+		url("/dssweb/js/UI2.0/skins/PC-A/images/score/ph1.png");
+	color: #999;
+}
+
+.phTop1 .money {
+	margin-top: 0px;
+	font-size: 20px;
+	font-weight: 400px;
+	line-height: 100px;
+	color: #c00000;
+}
+
+.phTop2 {
+	width: 30%;
+	background-position: center 13px;
+	background-image:
+		url("/dssweb/js/UI2.0/skins/PC-A/images/score/ph2.png");
+	color: #999;
+}
+
+.phTop3 {
+	width: 30%;
+	background-position: center 13px;
+	background-image:
+		url("/dssweb/js/UI2.0/skins/PC-A/images/score/ph3.png");
+	color: #999;
+}
+
+.phMe {
+	background-color: #fff;
+}
+
+.l-page-tabed {
+	color: #fff;
+}
+
+.l-page-tabName {
+	color: #fff;
+}
+
+.navslip {
+	background-color: #fff;
+}

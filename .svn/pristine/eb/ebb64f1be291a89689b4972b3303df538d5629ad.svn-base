@@ -1,0 +1,394 @@
+
+var appName = "/dssweb";
+$(function() {
+	init();
+ 
+});
+
+function init() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+}
+;
+
+function loadPage() {
+	return $("#page")
+		.ligerPage(
+			{
+				title : "",
+				backButton : false,
+				propertyButton : false,
+				prefixID : "scsContacts_cx",
+				iconEnable : false,
+				data : myData,
+				content : [ {
+					group : " ",
+					hideGroup : true,
+					type : "tabPage",
+					id : "myContacts",
+					pages : [
+						{
+							tabPage : true,
+							tabId : "allograph",
+							prefixID : "allograph",
+							tabName : "待审签",
+							content : [ {
+								id : "userCurrentFun",
+								group : "",
+								type : "grid",
+								hideGrouptTips : true,
+								unformat : true,
+								gridUrl : "/dssweb/DocList",
+								gridParam : {
+									userId :1184,
+									nowPage : 1,
+									pageNum : 1,
+								},
+								onBeforBuild:function(page){
+									$("#tabName0").text("待审签 "+page.gridData.count);
+								},
+								emptyText : "没有要审签的数据",
+								columns : [
+									{
+										width : 60,
+										cells : [ {
+											render : function(
+												item) {
+												var html = $("<div></div>");
+												var blank = $("<div class='blank'></div>");
+												var userInfo = $("<div id='userInf' class='userInf'></div>");
+												var headImg = $("<div id='headImg' class='headImg'></div>");
+												var nameInfo = $("<div id='nameInfo' class='nameInfo'></div>");
+												var workSpace = $("<div id='workSpace' class='workSpace'></div>");
+												var otherInfo = $("<div id='otherInfo' class='otherInfo'></div>");
+												var detail = $("<div id='detail' class='detail'></div>");
+												var beforeTime = $("<div id='beforeTime'> </div>");
+												if (item.index == 0)
+													blank = null;
+												html
+													.append(
+														blank)
+													.append(
+														userInfo
+															.append(
+																headImg)
+															.append(
+																nameInfo)
+															.append(
+																detail)
+															.append(
+																otherInfo))
+													.append(
+														workSpace);
+												headImg
+													.append($("<img src='"
+														+ getDefaultImageByAgeSex(
+															item.patAge,
+															item.patSex)
+														+ "'/>"));
+												nameInfo
+													.append($("<span id='userName'>"
+														+ item.patientName
+														+ "</span>"));
+												nameInfo
+													.append($("<span id='sex'>"
+														+ item.patSex
+														+ "</span>"));
+												nameInfo
+													.append($("<span id='age'>"
+														+ item.patAge
+														+ "</span>"));
+												nameInfo
+													.append($("<span id='number'>"
+														+ item.patientCode
+														+ "</span>"));
+												if(item.patSex=="男"){
+													nameInfo.css("color","#3f8fe4");
+												}
+
+												otherInfo
+													.append($("<span id='office'>"
+														+ item.requestDept
+														+ "</span>"));
+												otherInfo
+													.append($("<span id='doctor'>"
+														+ "主治医生:"
+														+ item.requestName
+														+ "</span>"));
+												detail
+													.append($("<div name='patientDeatils' class='detailbutton' style='background-color:#bbe4f8' '>患者详情 </div>"));
+												userInfo
+													.bind(
+														eClick,
+														function() {
+															window.location.href = "/dssweb/pages/detail/record.html?model=1&" + SetUrlParam(item);
+														});
+
+												$(item.bookList).each(
+													function(H, data) {
+														var smallContainer = $("<div id='smallContainer'> </div>");
+														workSpace
+															.append(smallContainer);
+														smallContainer
+															.append($("<div id='time'><img class='timeIcon' src='"
+																+ appName
+																+ "/resource/images/icon/clock.png'><span id='hospitalRecordTime'>"
+																+ getDateDiff1(data.requestTime.replace("T"," "))
+																+ "</span></div>"));
+
+														var skin = getPatientSkin(data.bookName);
+														smallContainer
+															.append($("<div name='hospitalRecord' class='record' style='background-color:"
+																+ skin.backgroundColor
+																+ "' '><img class='icon' src='"
+																+ skin.icon
+																+ "'>"
+																+ skin.name
+																+ "</div>"));
+														smallContainer.bind(eClick, function() {
+															window.location.href = "/dssweb/pages/detail/record.html?" + SetUrlParam(item) + "&bookId=" + data.bookId;
+														});
+													}
+												);
+
+												return html;
+
+											}
+										} ]
+									}, ]
+							} ]
+						},
+						{
+							tabPage : true,
+							tabId : "scsStudentContacts",
+							prefixID : "scsStudentContacts",
+							tabName : "审签记录",
+							labelWidth : 70,
+							content : [ {
+								group : " ",
+								hideGroup : false,
+								type : "datePickerStep",
+								onChange:queryRecordByDate,
+								stepType : "day",
+								id : "record",
+							}, {
+								id : "userCurrentFun",
+								group : "审签详情",
+								hideGroup : true,
+								type : "grid",
+								unformat : true,
+								hideGrouptTips : false,
+								gridUrl : "/dssweb/test/QueryRecord",
+								gridParam : {
+									userId : "123",
+									nowPage : "0",
+									pageNum : "10",
+									checkDate : "2018-07-10"
+								},
+								emptyText : "没有审签记录",
+								columns : [
+									{
+										cells : [ {
+											render : function(item) {
+											   var result= getDateDiff1(item.checkDate);
+												var skin = getPatientSkin(item.bookName);
+												var html = $("<div></div>");
+												var show = $("<div id='show'></div>");
+												var blank = $("<div class='blank'></div>");
+												var info = $("<div class='info'></div>");
+												var left = $("<div id=left></div>");
+												var middle = $("<div id=middle></div>");
+												var right = $("<div id=right></div>");
+
+												var leftImg = $("<div id='img'></div>");
+												var leftInfo = $("<div id='leftInfo'></div>");
+												var name = $("<div id='name' ></div>");
+												var sex = $("<div  id='sexDetails'></div>");
+												var number = $("<div id='numberDetails'></div>");
+												var rightType = $("<div id='type' style='background-color:" + skin.backgroundColor + " '></div>");
+												var doctor = $("<div id='doctorDetails'></div>");
+												var time = $("<div id='timeDetails'></div>");
+												var rightDetails = $("<div id='rightDetails'></div>");
+												var through = $("<div></div>");
+												var through1 = $("<div></div>");
+												
+												var longBottom = $("<div id='longBottom'></div>");
+												var clock = $("<div id='clock'></div>");
+												var long = $("<span id='long'></span>");
+												var goPicture = $("<div id='goPicture'></div>");
+
+												html.append(show);
+												show.append(blank).append(info);
+												info.append(left).append(right).append(middle);
+												left.append(leftImg).append(leftInfo).append(number);
+												middle.append(rightType).append(doctor).append(time);
+												right.append(rightDetails).append(goPicture);
+												through.append(through1);
+												rightDetails.append(through).append(longBottom);
+												longBottom.append(clock).append(long);
+												left.bind(eClick, function() {
+												window.location.href = "/dssweb/pages/detail/record.html?model=1&" + SetUrlParam(item);
+												});
+												leftInfo.append(name).append(sex);
+												right.bind(eClick, function(){
+												window.location.href = "/dssweb/pages/detail/record.html?model=2&" + SetUrlParam(item);	
+												});
+												if(item.patSex=="男"){
+													leftInfo.css("color","#3f8fe4");
+												}
+												
+												leftImg.append($("<img name='patient' src='" + getDefaultImageByAgeSex(item.patAge, item.patSex) + "'/>"));
+												name.append(item.patientName);
+												sex.append($("<span class='sex'>" + item.patSex + "</span>" + "&nbsp" + "<span class='age'>" + item.patAge + "岁" + "</span>"));
+												number.append(item.patientCode);
+
+												rightType.append("<div id='heart'><img src='" + skin.icon + "'></div>" + "<div id='contentType'>" + skin.name + "</div>");
+
+												doctor.append($("<span class='kind'>" + item.requestDept + "&nbsp" + "</span>" + "<span id='kind'>" + "主治医师：" + item.requestName + "</span>"));
+												time.append($("<span >" + "审签时间" + "&nbsp&nbsp" + item.checkDate.substring(2) + "</span>"));
+												
+												through1.append(item.iStatus);
+												if(item.iStatus=="审签通过"){
+													through.addClass("isThrough");
+													through1.addClass("isThrough1");
+												}else{
+													through.addClass("notThrough");
+													through1.addClass("notThrough1");
+												}
+												clock.append("<img id='clockIcon' src='/dssweb/resource/images/icon/clock.png'/>");
+												long.append(result);
+												goPicture.append("<img width='25px' height='36px' src='/dssweb/js/UI2.0/skins/PC-A/images/layout/goEdit.png'/>");
+												return html;
+											}
+										} ]
+									}
+
+
+								]
+							} ]
+						},
+						{
+							tabPage : true,
+							tabId : "myCollection",
+							prefixID : "myCollection",
+							tabName : "<div class='searchIcon'>检索</div>",
+							labelWidth : 20,
+							content : [ {
+								group : "",
+
+								type : "text",
+								id : "searchText",
+								display : "患者姓名",
+								//onKeyUp:verification,
+								plus : {
+									id : "开始检索",
+									width : 120,
+									type : "button",
+								    onclick: "queryPatient",
+
+								}
+							}, {
+								id : "userCurrentFun",
+								group : "患者查询结果",
+								hideGroup : false,
+								type : "grid",
+
+								gridUrl : "/dssweb/test/QueryPatient",
+								gridParam : {
+									patientName : "王五",
+									patientCode : 1
+								},
+								unformat : true,
+								hideGroupTips : false,
+								columns : [ {
+									cells : [ {
+										render : function(item) {
+											var html = $("<div></div>");
+											
+
+											var dataBase = item.base;
+											$(dataBase.data).each(function(h,data){
+												var show = $("<div id='searchShow'></div>");
+												var searchInfo = $("<div id='searchInfo'></div>");
+												var searchImg = $("<div id='searchImg'></div>");
+												var searchName = $("<div id='searchName'></div>");
+												var searchSex = $("<div id='searchSex'></div>");
+												searchImg.append($("<img src='" + getDefaultImageByAgeSex(data.patientAge, data.patientSex) + "' />"));
+												searchName.append(data.patientName);
+												searchSex.append($("<span class='sex'>" + data.patientSex + "</span>" + "&nbsp" + "<span class='age'>" + data.patientAge + "岁" + "</span>"));
+												searchInfo.append(searchImg).append(searchName).append(searchSex);
+												show.append(searchInfo);
+												searchInfo
+												.bind(
+													eClick,
+													function() {
+														window.location.href = "/dssweb/pages/detail/record.html?model=1&" + SetUrlParam(data);
+													});
+												html.append(show);
+											}); 
+
+											return html;
+
+
+
+
+
+
+										}
+									} ]
+								} ]
+							} ]
+						} ]
+				} ]
+			});
+}
+function queryRecordByDate(date){
+	thisPage.tabPages[0].pages[1].grids[0].gridParam.checkDate=date.replace("年","-").replace("月","-").replace("日","");
+	thisPage.tabPages[0].pages[1].reLoadData(1,0,"grid");
+}
+function queryPatient(){
+	
+	
+}
+
+function goUrl(url, json) {
+	window.location.href = url + "?" + SetUrlParam(json);
+}
+function getDateDiff1(dateTimeStamp) {
+	var minute = 1000 * 60,
+	hour = minute * 60,
+	day = hour * 24,
+	halfamonth = day * 15,
+	month = day * 30,
+	year = month * 12;
+    var now = new Date().getTime();
+    var sendDate = new Date(dateTimeStamp).getTime();
+    var diffValue = now - sendDate;
+    if (diffValue < 0) {
+    }
+    var yearC = diffValue / year,
+    	monthC = diffValue / month,
+    	weekC = diffValue / (7 * day),
+    	dayC = diffValue / day,
+    	hourC = diffValue / hour,
+    	minC = diffValue / minute;
+    /*if (yearC >= 1) {
+        result = parseInt(yearC) + "年前";
+    } else */if (monthC > 1) {
+        result =  "30天以上";
+    } else if (weekC > 1) {
+        result =  "7天以上";
+    } else if (dayC > 1) {
+        result = parseInt(dayC) + "天以内";
+    } else if (hourC > 1) {
+        result = parseInt(hourC) + "小时内";
+    }  else
+        result = "1小时内";
+    return result;
+}
+
+
+
+
+

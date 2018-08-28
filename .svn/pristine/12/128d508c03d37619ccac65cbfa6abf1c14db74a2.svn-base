@@ -1,0 +1,165 @@
+package test.command;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.service.QueryPatientService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.QueryPatientInDataBean;
+import servlet.inDataBean.QueryRecordInDataBean;
+import servlet.outDataBean.QueryPatientOutDataBean;
+import servlet.outDataBean.QueryRecordOutDataBean;
+
+/**
+ * Servlet implementation class QueryPatientServlet
+ */
+@WebServlet("/test/QueryPatient")
+public class QueryPatientServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	boolean test = false;
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public QueryPatientServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		QueryPatientInDataBean inData = new QueryPatientInDataBean();
+		VoResponse voResponse = new VoResponse();
+		try {
+			inData.setPatientName(request.getParameter("patientName"));
+			inData.setPatientCode(request.getParameter("patientCode"));
+
+			if (StringUtil.isEmpty(inData.getPatientName()) || StringUtil.isEmpty(inData.getPatientCode())) {
+				throw new Exception("参数不能为空");
+			}
+		} catch (Exception e) {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("参数异常：" + e.getMessage());
+			HttpResponseUtil.response(voResponse, response);
+			return;
+		}
+		WinningResponse responseW = new WinningResponse();
+		if (!test) {
+		
+		/*
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("cPatientName", inData.getPatientName());
+		param.put("cPatientCode", inData.getPatientCode());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		 responseW = QueryPatientService.QueryPatient(requestW);
+		}
+		else {
+			Map testData = new HashMap();
+			
+			testData.put("patientName","王五" );
+			testData.put("patientCode","456" );
+	
+			testData.put("patientSex","男" );
+			testData.put("patientAge","20" );
+			
+			testData.put("patientName","王五" );
+			testData.put("patientCode","789" );
+	
+			testData.put("patientSex","男" );
+			testData.put("patientAge","20" );
+			
+			
+			testData.put("patientName","王五" );
+			testData.put("patientCode","123" );
+	
+			testData.put("patientSex","男" );
+			testData.put("patientAge","20" );
+			
+			
+			if(inData.getPatientName().equals("王五")){
+				responseW.setRetCode("0000");
+				responseW.setRetMsg("");
+				responseW.setRetData(testData);
+			}else{
+				responseW.setRetCode("9999");
+				responseW.setRetMsg("不存在此用户");
+			}
+			
+		}
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		List retData = new ArrayList();
+		Map responseWretData = responseW.getRetData();
+		
+		if (responseW.isSuccess()) {
+			try {
+				for (int i = 0; i < 3; i++) {
+					QueryPatientOutDataBean outData = new QueryPatientOutDataBean();
+					outData.setPatientName(responseWretData.get("patientName").toString());
+					outData.setPatientCode(responseWretData.get("patientCode").toString());
+					outData.setPatientSex(responseWretData.get("patientSex").toString());
+					outData.setPatientAge(responseWretData.get("patientAge").toString());
+					retData.add(outData);
+				}
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(retData);
+				voResponse.setRet_count(retData.size());;
+
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常：" + e.getMessage());
+			}
+
+		} else {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:" + responseW.getRetMsg());
+		}
+
+		HttpResponseUtil.response(voResponse, response);
+	}
+	public void init() throws ServletException {
+		// Put your code here
+		String packageName = QueryPatientServlet.class.getPackage().getName();
+		if (packageName.indexOf("test.") >= 0)
+			test = true;
+	}
+
+}

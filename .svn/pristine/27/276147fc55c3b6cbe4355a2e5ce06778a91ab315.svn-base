@@ -1,0 +1,20 @@
+package com.java.servlet.inDataBean;
+
+public class QueryPatientInDataBean {
+	String patientName;
+	String patientCode;
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public String getPatientCode() {
+		return patientCode;
+	}
+	public void setPatientCode(String patientCode) {
+		this.patientCode = patientCode;
+	}
+	
+
+}

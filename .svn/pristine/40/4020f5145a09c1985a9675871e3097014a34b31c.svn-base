@@ -1,0 +1,14 @@
+package servlet.inDataBean;
+
+public class CancelSignInDataBean {
+	String bookId;
+
+	public String getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+
+}

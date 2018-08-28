@@ -1,0 +1,299 @@
+function formatData(bookData) {
+	switch (bookData.textFormat) {
+	case "text":
+		return _textBook(bookData.text);
+	case "json":
+		return _jsonBook(bookData.text);
+	default:
+		return _textBook(bookData.text);
+	}
+}
+
+function _textBook(data) {
+	return $("<div class='textBook fontSeter' style='font-size:" + fontSizeNow + "px;'>" + data + "</div>");
+}
+function _jsonBook(data) {
+	var jsonTables = $("<div class='jsonTables'></div>");
+	var obj = eval(data);
+	for (var i = 0; i < obj.length; i++) {
+		var table;
+		if (obj[0].bookClass == null) {
+			table = $("<table></table>");
+			for (j in obj[i]) {
+				var tr = $("<tr class='fontSeter' style='font-size:" + fontSizeNow + "px;'></tr>");
+				var td1 = $("<td width=25% style='text-align:right;'>" + j + ":</td>");
+				var td2 = $("<td>" + obj[i][j] + "</td>");
+				table.append(tr.append(td1).append(td2));
+			}
+		} else if (obj[0].bookClass .indexOf( "医嘱")>=0) {
+			return _doctorOrder(data);
+		} else if (obj[0].bookClass .indexOf( "病案首页")>=0) {
+			return _bookIndex(data);
+		}else {
+			jsonTables.append($("<div class='fontSeter bookClass' style='font-size:" + fontSizeNow + "px;'>" + obj[i].bookClass + "</div>"));
+			//			var tr=$("<tr class='fontSeter' ></tr>");
+			//			var td=$("<td style='text-align:left;' colspan='2'>"+obj[i].bookClass+":</td>");
+			//			table.append(tr.append(td));
+			//			///表中表
+			//			var tr2=$("<tr class='fontSeter'></tr>");
+			//			var td2=$("<td></td>");
+			//			table.append(tr2.append(td2));
+			table = $("<div class='outBox'></div>");
+			//			inTable=$("<div class='inTable'></div>");
+			var table2 = $("<table></table>");
+			table.append(table2);
+			//			td2.append(box.append(table2));
+			///表中表  表头
+			var rowsData = obj[i].data;
+			var headTr = $("<thead class='fontSeter' style='font-size:" + fontSizeNow + "px;'></thead>");
+			table2.append(headTr);
+			var td = $("<th style='font-weight:600;'></th>");
+			headTr.append(td);
+			for (j in rowsData[0]) {
+				td.append($("<span>" + j + "</span>"))
+			}
+			var tbody = $("<tbody></tbody>");
+			table2.append(tbody);
+			for (j in rowsData) {
+				var rowTr = $("<tr class='fontSeter' style='font-size:" + fontSizeNow + "px;' ></tr>");
+				tbody.append(rowTr);
+				var td = $("<td></td>");
+				rowTr.append(td);
+				for (m in rowsData[j]) {
+					td.append($("<span>" + rowsData[j][m] + "</span>"))
+				}
+			}
+
+		}
+
+		jsonTables.append(table);
+
+	}
+	return jsonTables;
+}
+/**医嘱个性化**/
+function _doctorOrder(data) {
+	var jsonTables = $("<div></div>");
+	var obj = eval(data);
+	for (var i = 0; i < obj.length; i++) {
+		jsonTables.append($("<div class='fontSeter bookClass' style='font-size:" + fontSizeNow + "px;'>" + obj[i].bookClass + "</div>"));
+		var table = $("<div style='position: relative; z-index: 999;'></div>");
+		var rowsData = obj[i].data;
+		for (j in rowsData) {
+			var status = rowsData[j]["状态"];
+			var stratName = rowsData[j]["开立医生"];
+			var startTime = rowsData[j]["开立时间"].replace("T"," ");
+			var content = rowsData[j]["医嘱名称"];
+			var endTime = rowsData[j]["停止时间"];
+			var endName = rowsData[j]["停止医生"];
+			var endName2 = rowsData[j]["停止护士"];
+			var workStatusClass=(status=="停止"?"end":"work");
+			var statusName=(status=="停止"?"已停止":"执行中");
+			var statusName2=(status=="停止"?("于"+endTime.replace("T"," ")+"停止"):"执行中");
+
+			var DoctorOrder = $("<div class='DoctorOrder "+workStatusClass+"ingBorder  DOmin'></div>");
+			table.append(DoctorOrder);
+			var dom = $(
+				'<div class="DOTopTips">                                                                                                        '
+				+ '	<div class="DOTriangleBox ">                                                                                                 '
+				+ '		<div class="DOTriangle '+workStatusClass+'ingTriangle"></div>                                                                            '
+				+ '	</div>                                                                                                                       '
+				+ '	<div class="DOStatusBg '+workStatusClass+'ingBack"></div>                                                                                    '
+				+ '	<div class="DOStatus ">                                                                                                      '
+				+ '		<div class="status">'+statusName+'</div>                                                                                         '
+				+ '		<span class="time" style="font-size:16px;line-height:28px;">'+getDateDiff2(startTime,endTime)+'</span><br />                                                                                  '
+				+ '		<span class="stopName">'+stratName+'</span><br />                                                                               '
+				+ '		<span class="stopTime">'+statusName+'</span>                                                                                     '
+				+ '	</div>                                                                                                                       '
+				+ '</div>                                                                                                                         '
+				+ '<div class="DOText '+workStatusClass+'ingText">                                                                                                '
+				+ '	<div class="DOStratName">'+stratName+'：</div>                                                                                      '
+				+ '	<div class="DOStartTime">'+startTime.substring(0,16)+'</div>                                                                              '
+				+ '	<div class="DOcontent fontSeter" style="font-size:' + fontSizeNow + 'px;">'+content+'</div>'
+				+ '	<div class="DOEndTime">停止时间：'+endTime+'持续：'+getDateDiff2(startTime,endTime)+'</div>                                                       '
+				+ '	<div class="DOEndName">停止医生：'+endName+' 护士：'+endName2+'</div>                                                                   '
+				+ '</div>                                                                                                                         '
+			);
+			DoctorOrder.append(dom);
+			DoctorOrder.bind(eClick,function(e) {
+				if ($(e.target).parents(".DoctorOrder").hasClass("DOmin")) {
+					$(".DoctorOrder").addClass("DOmin");
+					$(e.target).parents(".DoctorOrder").removeClass("DOmin")
+				} else {
+					$(e.target).parents(".DoctorOrder").addClass("DOmin")
+				}
+			});
+
+		}
+		jsonTables.append(table);
+	}
+	return jsonTables;
+}
+
+
+
+/**首页个性化**/
+function _bookIndex(data) {
+	var jsonTables = $("<div class='jsonTables'></div>");
+	var obj = eval(data);
+	for (var i = 0; i < obj.length; i++) {
+		jsonTables.append($("<div class='fontSeter bookClass' style='font-size:" + fontSizeNow + "px;'>" + obj[i].bookClass + "</div>"));
+		var table = $("<div></div>");
+		if(obj[i].bookClass=="病案首页"){
+			var rowsData = obj[i].data[0];
+			var baseInfo=$("<div  class='fontSeter' style='text-align:left; padding:15px; font-size:" + fontSizeNow + "px;'>基本信息<hr/></div>");
+			var relatInfo=$("<div class='fontSeter' style='text-align:left; padding:15px; font-size:" + fontSizeNow + "px;'>联系信息<hr/></div>");
+			var inInfo=$("<div class='fontSeter' style='text-align:left; padding:15px; font-size:" + fontSizeNow + "px;'>入院信息<hr/></div>");
+			var outInfo=$("<div class='fontSeter' style='text-align:left; padding:15px; font-size:" + fontSizeNow + "px;'>出院信息<hr/></div>");
+			table.append(baseInfo).append(relatInfo).append(inInfo).append(outInfo);
+			
+			
+			baseInfo.append($("<div>" +
+					"<span>患者："+rowsData["basecPatientName"]+"</span>" +
+					"<span> "+rowsData["baseSexName"]+"</span>" +
+					"<span> "+rowsData["baseiYearsOld"]+rowsData["baseiYearsUnit"]+" "+rowsData["baseMarriageName"]+"</span></br>" +
+					"<span>身份证号："+rowsData["basecIdentityCard"]+"</span></br>"+
+					"<span>籍贯："+(rowsData["basecpro"]||"")+(rowsData["basecCity"]||"")+"</span></br>"+
+					"<span>住址："+(rowsData["basecNowPro"]||"")+(rowsData["basecNowCity"]||"")+(rowsData["basecNowCounty"]||"")+"</span></br>"+
+					"<span>"+(rowsData["basecFamilyStreen"]?("村组："+rowsData["basecFamilyStreen"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecNocard"]?("健康卡："+rowsData["basecNocard"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecFamilyTel"]?("电话："+rowsData["basecFamilyTel"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecNowMail"]?("邮编："+rowsData["basecNowMail"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["baseJobName"]?("职业："+rowsData["baseJobName"]+"</br>"):"")+"</span>"+
+					"<span>户口地址："+(rowsData["basecFamilyPro"]||"")+"</span>"+
+					"<span> "+(rowsData["basecFamilyCity"]||"")+"</span>" +
+					"<span> "+(rowsData["basecFamilyCounty"]||"")+"</span></br>" +
+					"<span>"+(rowsData["baseMarriageName"]?("婚姻："+rowsData["baseMarriageName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecFamilyMail"]?("户籍邮编："+rowsData["basecFamilyMail"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecUnitName"]?("单位地址："+rowsData["basecUnitName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecUnitTel"]?("单位电话："+rowsData["basecUnitTel"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["basecUnitMail"]?("单位邮编："+rowsData["basecUnitMail"]+"</br>"):"")+"</span>"+
+					""));
+			
+			relatInfo.append($("<div>" +
+					"<span>联系人："+rowsData["relatcRelationPerson"]+"</span>" +
+					"<span> "+(rowsData["relatKinName"]||"")+"</span></br>" +
+					"<span>"+(rowsData["relatcRelationTel"]?("电话："+rowsData["relatcRelationTel"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["relatcRelationAdd"]?("住址："+rowsData["relatcRelationAdd"]+"</br>"):"")+"</span>"+
+					"<span>登记日期："+(rowsData["relatdRegisterDate"]||"").replace("T"," ").substring(0,16)+"</span></br>"+
+					""));
+			
+			inInfo.append($("<div>" +
+					"<span>入院时间："+rowsData["IndInDate"].replace("T"," ").substring(0,16)+"</span></br>" +
+					"<span>"+(rowsData["InDeptName"]?("入院科室："+rowsData["InDeptName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["InRoomName"]?("入院病房："+rowsData["InRoomName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncPatientCode"]?("住院号："+rowsData["IncPatientCode"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["InRoomName_Now"]?("当前病房："+rowsData["InRoomName_Now"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["InBedCode"]?("床位："+rowsData["InBedCode"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncInDiag"]?("入院诊断："+rowsData["IncInDiag"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncName"]?("入院时情况："+rowsData["IncName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncCaseCode"]?("病案号码："+rowsData["IncCaseCode"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncMainDiag"]?("主诊断："+rowsData["IncMainDiag"]+"</br>"):"")+"</span>"+
+					"<span>确诊日期："+(rowsData["IndInDiagDate"]||"").replace("T"," ").substring(0,16)+"</span></br>" +
+					"<span>"+(rowsData["IniInHosTime"]?("入院次数："+rowsData["IniInHosTime"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IniWayName"]?("入院途径："+rowsData["IniWayName"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncInjury"]?("损伤中毒原因："+rowsData["IncInjury"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["Incdiagno"]?("病理诊断："+rowsData["Incdiagno"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["InDeptName_Tran"]?("转科科室："+rowsData["InDeptName_Tran"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IniDiagnoseId"]?("就诊号："+rowsData["IniDiagnoseId"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IncClinicDiag"]?("门急诊诊断："+rowsData["IncClinicDiag"]+"</br>"):"")+"</span>"+
+					
+					
+					""));
+			
+			outInfo.append($("<div>" +
+					"<span>出院日期："+(rowsData["IndOutDate"]||"").replace("T"," ").substring(0,16)+"</span></br>" +
+					"<span>"+(rowsData["InDeptName_Out"]?("出院科室："+rowsData["InDeptName_Out"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["InRoomName_Out"]?("出院病房："+rowsData["InRoomName_Out"]+"</br>"):"")+"</span>"+
+					"<span>"+(rowsData["IniInDays"]?("住院天数："+rowsData["IniInDays"]+"</br>"):"")+"</span>"+
+					""));
+			
+//			for(j in rowsData){
+//				if(j.indexOf("base")==0){
+//					
+//					var span=$("<span>"+rowsData[j]+"</span>");
+//					baseInfo.append(span);
+//				}else if(j.indexOf("relat")==0){
+//					var span=$("<br/><span>"+rowsData[j]+"</span>");
+//					relatInfo.append(span);
+//				}else if(j.indexOf("In")==0){
+//					var span=$("<br/><span>"+rowsData[j]+"</span>");
+//					inInfo.append(span);
+//				}
+//			}
+//			
+		}else if(obj[i].bookClass=="出院诊断"){
+			 
+			var table2 = $("<table></table>");
+			table.append(table2);
+			//			td2.append(box.append(table2));
+			///表中表  表头
+			var rowsData = obj[i].data;
+			var headTr = $("<thead class='fontSeter' style='font-size:" + fontSizeNow + "px;'></thead>");
+			table2.append(headTr);
+			for (j in rowsData[0]) {
+				var td = $("<th style='font-weight:600; min-width:80px;'></th>");
+				headTr.append(td);
+				td.append($("<span>" + j + "</span>"))
+			}
+			var tbody = $("<tbody></tbody>");
+			table2.append(tbody);
+			for (j in rowsData) {
+				var rowTr = $("<tr class='fontSeter' style='font-size:" + fontSizeNow + "px;' ></tr>");
+				tbody.append(rowTr);
+				for (m in rowsData[j]) {
+					var td = $("<td></td>");
+					rowTr.append(td);
+					td.append($("<span>" + rowsData[j][m] + "</span>"))
+				}
+			}
+		}
+		jsonTables.append(table);
+	}
+	return jsonTables;
+}
+
+
+
+
+
+
+/**短日期工具*/
+function getDateDiff2(dateTimeStamp,endTimeStamp) {
+	var minute = 1000 * 60,
+		hour = minute * 60,
+		day = hour * 24,
+		halfamonth = day * 15,
+		month = day * 30,
+		year = month * 12;
+	var now ;
+	if(endTimeStamp==null||endTimeStamp==""||endTimeStamp=="null"||endTimeStamp=="NULL"||endTimeStamp=="Null")
+		now= new Date().getTime();
+	else{
+		now=Date.parse(new Date(endTimeStamp));
+	}
+	var sendDate = new Date(dateTimeStamp).getTime();
+	var diffValue = now - sendDate;
+	if (diffValue < 0) {
+	}
+	var yearC = diffValue / year,
+		monthC = diffValue / month,
+		weekC = diffValue / (7 * day),
+		dayC = diffValue / day,
+		hourC = diffValue / hour,
+		minC = diffValue / minute;
+	/*if (yearC >= 1) {
+	    result = parseInt(yearC) + "年前";
+	} else */
+	if (monthC > 1) {
+		result = "30天以上";
+	} else if (weekC > 1) {
+		result = "7天以上";
+	} else if (dayC > 1) {
+		result = parseInt(dayC) + "天以内";
+	} else if (hourC > 1) {
+		result = parseInt(hourC) + "小时内";
+	} else
+		result = "1小时内";
+	return result;
+}

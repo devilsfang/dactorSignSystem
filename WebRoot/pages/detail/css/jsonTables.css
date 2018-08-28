@@ -1,0 +1,57 @@
+.fontSeter {
+	font-size: 14px;
+	line-height: 1.5em;
+	word-break:break-all;
+}
+
+.textBook {
+	width: 90%;
+	margin: 0px auto;
+	text-align: left;
+	background-size: 100%;
+    background-image: url(/dssweb/resource/images/bg/hospitalBg.png);
+}
+
+.jsonTables {
+	background-size:100%;
+	background-image:url("/dssweb/resource/images/bg/hospitalBg.png");
+}
+
+.jsonTables table {
+	border: 1px solid #999;
+	width: 90%;
+	margin: 20px 5%;
+	background-color: #fafafa;
+}
+
+.jsonTables td,th {
+	border-bottom: 1px solid #999;
+	padding: 5px;
+}
+.outBox {
+	 
+}
+.outBox span{
+	margin:3px;
+}
+.inTable {
+	width: 1000px;
+}
+
+.inTable table {
+	width: 100%;
+	margin: 0px;
+}
+
+.inTable td {
+	
+}
+
+.bookClass{
+	margin-top:20px;
+	font-size:18px;
+	text-align: center;
+}
+.l-page-bottom-border {
+	background-color: #dde5e8;
+}

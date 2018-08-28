@@ -1,0 +1,41 @@
+.circle {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                border-radius: 50%;
+                background: red;
+            }
+                 
+            .clip_left,.clip_right{
+                width:100%;
+                height:100%;
+                position: absolute;
+                top: 0px;left: 0px;
+            }
+            .circle_left, .circle_right{
+                width:100%;
+                height:100%;
+                position: absolute;
+                border-radius: 50%;
+                top: 0px;left: 0px;
+                background: green;
+            }
+
+            .circle_right,.clip_right {
+                clip:rect(0,auto,auto,30);
+            }
+            .circle_left , .clip_left{
+                clip:rect(0,30,auto,0);
+            }
+                 
+      
+            .circle_mask {
+                width: 80%;
+                height: 80%;
+                border-radius: 50%;
+                left: 10%;
+                top: 10%;
+                background: #FFF;
+                position: absolute;
+                text-align: center;
+            }

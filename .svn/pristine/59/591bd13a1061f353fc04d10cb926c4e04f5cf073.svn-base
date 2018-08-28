@@ -1,0 +1,28 @@
+package com.java.servlet.outDataBean;
+
+import net.sf.json.JSON;
+
+public class VersionDetectionUpdateOutDataBean {
+	String version;
+	String address;
+	JSON config;
+	public String getVersion() {
+		return version;
+	}
+	public void setVersion(String version) {
+		this.version = version;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public JSON getConfig() {
+		return config;
+	}
+	public void setConfig(JSON config) {
+		this.config = config;
+	}
+
+}

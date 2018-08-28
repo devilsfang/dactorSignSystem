@@ -1,0 +1,21 @@
+package test;
+
+import org.junit.Test;
+
+import servlet.outDataBean.LoginOutDataBean;
+
+import net.sf.json.JSONObject;
+
+public class TestAA {
+
+	@Test
+	public void testA(){
+		String a="A:1,B:2,C:3";
+		String []aa=a.split(",");
+		for(int i=0;i<aa.length;i++){
+			String bb[]=aa[i].split(":");
+			System.out.println(bb[0]+"----------"+bb[1]);
+		}
+		
+	}
+}

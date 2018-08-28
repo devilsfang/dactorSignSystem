@@ -1,0 +1,95 @@
+package com.java.servlet.outDataBean;
+
+public class QueryRecordOutDataBean {
+	String totalNum;
+	String patientName;
+	String patientCode;
+	String bookId;
+	String bookName;
+	String patSex;
+	String patAge;
+	String checkDate;
+	String iStatus;
+	String requestName;
+	String requestDept;
+	String requestTitl;
+	String requestTel;
+	public String getTotalNum() {
+		return totalNum;
+	}
+	public void setTotalNum(String totalNum) {
+		this.totalNum = totalNum;
+	}
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public String getPatientCode() {
+		return patientCode;
+	}
+	public void setPatientCode(String patientCode) {
+		this.patientCode = patientCode;
+	}
+	public String getBookId() {
+		return bookId;
+	}
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public String getPatSex() {
+		return patSex;
+	}
+	public void setPatSex(String patSex) {
+		this.patSex = patSex;
+	}
+	public String getPatAge() {
+		return patAge;
+	}
+	public void setPatAge(String patAge) {
+		this.patAge = patAge;
+	}
+	public String getCheckDate() {
+		return checkDate;
+	}
+	public void setCheckDate(String checkDate) {
+		this.checkDate = checkDate;
+	}
+	public String getiStatus() {
+		return iStatus;
+	}
+	public void setiStatus(String iStatus) {
+		this.iStatus = iStatus;
+	}
+	public String getRequestName() {
+		return requestName;
+	}
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
+	}
+	public String getRequestDept() {
+		return requestDept;
+	}
+	public void setRequestDept(String requestDept) {
+		this.requestDept = requestDept;
+	}
+	public String getRequestTitl() {
+		return requestTitl;
+	}
+	public void setRequestTitl(String requestTitl) {
+		this.requestTitl = requestTitl;
+	}
+	public String getRequestTel() {
+		return requestTel;
+	}
+	public void setRequestTel(String requestTel) {
+		this.requestTel = requestTel;
+	}
+}

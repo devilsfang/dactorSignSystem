@@ -1,0 +1,105 @@
+package servlet.outDataBean;
+
+import java.util.List;
+
+import common.vo.VoResponse;
+
+public class DocListOutDataBean{
+
+    String userId;
+    String iRecordId;
+    String iCaseHisId;
+    String iDiagnoseId;
+	String patientName;
+	String patientCode;
+	List bookList;
+	String patSex;
+	String patAge;
+	String requestName;
+	String requestDept;
+	String requestTitl;
+	String requestTel;
+
+	
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getiRecordId() {
+		return iRecordId;
+	}
+	public void setiRecordId(String iRecordId) {
+		this.iRecordId = iRecordId;
+	}
+	public String getiCaseHisId() {
+		return iCaseHisId;
+	}
+	public void setiCaseHisId(String iCaseHisId) {
+		this.iCaseHisId = iCaseHisId;
+	}
+	public String getiDiagnoseId() {
+		return iDiagnoseId;
+	}
+	public void setiDiagnoseId(String iDiagnoseId) {
+		this.iDiagnoseId = iDiagnoseId;
+	}
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public String getPatientCode() {
+		return patientCode;
+	}
+	public void setPatientCode(String patientCode) {
+		this.patientCode = patientCode;
+	}
+	 
+	public List getBookList() {
+		return bookList;
+	}
+	public void setBookList(List bookList) {
+		this.bookList = bookList;
+	}
+	public String getPatSex() {
+		return patSex;
+	}
+	public void setPatSex(String patSex) {
+		this.patSex = patSex;
+	}
+	public String getPatAge() {
+		return patAge;
+	}
+	public void setPatAge(String patAge) {
+		this.patAge = patAge;
+	}
+	public String getRequestName() {
+		return requestName;
+	}
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
+	}
+	public String getRequestDept() {
+		return requestDept;
+	}
+	public void setRequestDept(String requestDept) {
+		this.requestDept = requestDept;
+	}
+	public String getRequestTitl() {
+		return requestTitl;
+	}
+	public void setRequestTitl(String requestTitl) {
+		this.requestTitl = requestTitl;
+	}
+	public String getRequestTel() {
+		return requestTel;
+	}
+	public void setRequestTel(String requestTel) {
+		this.requestTel = requestTel;
+	}
+
+	
+}

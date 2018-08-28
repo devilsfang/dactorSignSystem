@@ -1,0 +1,257 @@
+@charset "utf-8";
+/* CSS Document */
+body{
+	background-color:#3ebde7;
+	overflow:hidden;
+	margin:0;
+	}
+#downloadBar {
+	height: 57px;
+	width: 100%;
+	background-color: #ebebeb;
+}
+#winningImage {
+	float: left;
+	height: 57px;
+	width: 147px;
+}
+#wnImage {
+	height: 57px;
+}
+#downloadMiddle {
+	height: 100px;
+	width: 100%;
+	background-color: #3ebde7;
+	padding-top: 18%;
+}
+#signImage {
+	width: 267px;
+	margin: 0px auto;
+}
+#sgImage {
+	width: 267px;
+	margin-left:-4px;
+}
+#download {
+	width: 100%;
+	height: 187px;
+	background-color: #3ebde7;
+	overflow: hidden;
+	position:absolute;
+	bottom:69px;
+}
+#cutLine {
+	width: 200%;
+	height: 200px;
+	background-color: #ebebeb;
+	transform: rotate(165deg);
+	-ms-transform: rotate(165deg);
+	-moz-transform: rotate(165deg);
+	-webkit-transform: rotate(165deg);
+	-o-transform: rotate(165deg);
+	margin-left: -50%;
+	margin-top: -100px;
+}
+#downloadInformation{
+	width:180px;
+	margin:0px auto;
+	height:20px;
+	visibility:hidden;
+	}
+#downloadInformation span{
+	font-size:12px;
+	color:#FFF;
+	position:relative;
+	}
+#blendDownloadButton{
+	width:285px;
+	height:80px;
+	border-radius:10px;
+	position:relative;
+	margin:0px auto;
+	margin-top:5px;
+	z-index: 1;
+	display:none;
+	}
+#appleDownloadButton{
+	width:270px;
+	height:66px;
+	background-color: #d0d0d0;
+	border-radius:10px;
+	position:relative;
+	margin:0px auto;
+	margin-top:5px;
+	z-index: 1;
+	box-shadow: 1px 1px 3px 1px rgba(78, 78, 78, 0.5);
+	border-top: 0.3px solid #e6e6e6;
+    border-left: 0.3px solid #e6e6e6;
+	display:none;
+	}
+.appleDownloadButton{
+	width:132px;
+	height:55px;
+	background-color: #d0d0d0;
+	border-radius:10px;
+	position:relative;
+	margin:0px auto;
+	margin-top:5px;
+	z-index: 1;
+	box-shadow: 1px 1px 3px 1px rgba(78, 78, 78, 0.5);
+	float:left;
+	border-top: 0.3px solid #e6e6e6;
+    border-left: 0.3px solid #e6e6e6;
+	}
+#andrioDownloadButton{
+	width:270px;
+	height:66px;
+	background-color: #97c03e;
+	border-radius:10px;
+	position:relative;
+	margin:0px auto;
+	margin-top:5px;
+	z-index: 1;
+	box-shadow: 1px 1px 3px 1px rgba(78, 78, 78, 0.5);
+	display:none;
+	border-top: 0.3px solid #a5d244;
+    border-left: 0.3px solid #a5d244;
+	}
+.andrioDownloadButton{
+	width:132px;
+	height:55px;
+	background-color: #97c03e;
+	border-radius:10px;
+	position:relative;
+	margin:0px auto;
+	margin-top:5px;
+	z-index: 1;
+	box-shadow: 1px 1px 3px 1px rgba(78, 78, 78, 0.5);
+	float:right;
+	border-top: 0.3px solid #a5d244;
+    border-left: 0.3px solid #a5d244;
+	}
+#container{
+	height:30px;
+	width:220px;
+	margin:0px auto;
+	}
+.container{
+	height: 30px;
+    width: 135px;
+    margin: 0px auto;
+	}
+#appleLog{
+	width:30px;
+	height:30px;
+	float:left;
+	line-height:85px;
+	margin-right:10px;
+	}
+.appleLog{
+	width: 30px;
+    height: 30px;
+    float: left;
+    margin: 8px;
+	}
+#appleIcon{
+	height:36px;
+	}
+#appleText{
+	line-height:66px;
+	width:220px;
+	height:30px;
+    word-break: keep-all;
+    white-space: nowrap;
+	
+	}
+.appleText{
+	width: 71px;
+    float: left;
+    margin: 4px;
+	color:#FFF;
+	}
+#appleText span{
+    font-size: 22px;
+    color: #FFF;
+    word-break: keep-all;
+    white-space: nowrap;
+    
+	}
+#andrioText{
+	line-height:66px;
+	width:220px;
+	height:30px;
+	}
+#andrioText span{
+    font-size: 22px;
+    color: #FFF;
+	}
+#installStep{
+	width:165px;
+	height:40px;
+	margin:0px auto;
+	z-index:1;
+	position:relative;
+	color:#3ebde7;
+	font-size:22px;
+	margin-top:30px;
+	border-bottom: solid;
+	}
+#installStep span{
+	display:block;
+	float:left;
+	margin-left:9px;
+	line-height:40px;
+	}
+#question{
+	width:17px;
+	height:17px;
+	color:#FFF;
+	background-color:#3ebde7;
+	transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	display:block;
+	float:left;
+	margin-top: 10px;
+	border-radius:4px;
+	}
+#question span{
+	transform: rotate(315deg);
+	-ms-transform: rotate(315deg);
+	-moz-transform: rotate(315deg);
+	-webkit-transform: rotate(315deg);
+	-o-transform: rotate(315deg);
+	display: block;
+	font-size:17px;
+    margin:2px;
+	}
+#symbol{
+    color: #FFF;
+    width: 18px;
+    height: 40px;
+    float: left;
+    margin-left: -12px;
+    z-index: 2;
+    position: relative;
+    line-height:40px;
+    font-size:18px;
+}
+#copyRight{
+	width:100%;
+	height:40px;
+	background-color:#ebebeb;
+	color:#405a63;
+	padding-top:30px;
+	position:absolute;
+	bottom:0px;
+	}
+#wnCopyRight{
+	width:155px;
+	height:20px;
+	font-size:14px;
+	margin:0px auto;
+    word-break: keep-all;
+    white-space: nowrap;
+	}

@@ -1,0 +1,22 @@
+package test;
+
+import org.junit.Test;
+
+import servlet.outDataBean.LoginOutDataBean;
+
+import net.sf.json.JSONObject;
+
+public class TestAA {
+
+	@Test
+	public void testA(){
+		LoginOutDataBean out=new LoginOutDataBean();
+		
+		out.setUserId("123");
+		
+		JSONObject json=JSONObject.fromObject((Object)out);
+		
+		System.out.println(json.getString("userId"));
+		
+	}
+}

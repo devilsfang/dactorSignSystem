@@ -1,0 +1,71 @@
+
+	.l-row-button{
+		float:left;
+		}
+
+
+
+#wx {
+	background-color: #079484;
+	height: 5px;
+}
+
+
+#userInfo {
+	max-width: 420px;
+	width: 90%;
+	margin: 5px auto;
+	padding: 0px 3%;
+	height: 55px;
+
+}
+
+#userInfo span {
+	line-height:55px;
+	font-size: 20px;
+	font-weight: 600;
+	display: block;
+	float: left;
+	margin-right:10px;
+	margin-left:10px;
+}
+
+#userInfo img {
+	width: 45px;
+	border: solid 5px #f3f3f3;
+	border-radius: 10px;
+	display: block;
+	float: left;
+}
+
+#percent {
+	width: 44px;
+	height: 44px;
+	margin-top:5px;
+	float: right;
+	line-height: 34px;
+	font-size: 12px;
+	font-weight: 400;
+}
+
+.circle {
+	background:#f58207;
+}
+.circle #txt{
+	font-size: 10px;
+    padding-top: 56px;
+    line-height: 12px;
+    width: 44px;
+    text-align:certen;
+}
+.circle_left,.circle_right {
+	background: #e0ddde ;
+}
+
+.circle_right,.clip_right {
+	clip: rect(0, auto, auto, 22);
+}
+
+.circle_left,.clip_left {
+	clip: rect(0, 22, auto, 0);
+}

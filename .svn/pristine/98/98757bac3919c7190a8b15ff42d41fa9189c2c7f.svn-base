@@ -1,0 +1,199 @@
+package com.java.common.util;
+
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.X509TrustManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import net.sf.json.JSONObject;
+
+public class HttpRequestUtil {
+	private static Log logger = LogFactory.getLog(HttpRequestUtil.class);    //日志记录
+	private static final String ENCODING = "UTF-8";
+	
+	/**
+     * httpPost
+     * @param url  路径
+     * @param jsonParam 参数
+     * @return
+     */
+    public static JSONObject httpPost(String url, Map<String, String> paramMap) {
+        return httpPost(url, paramMap, false);
+    }
+ 
+    /**
+     * post请求
+     * @param url         url地址
+     * @param jsonParam     参数
+     * @param noNeedResponse    不需要返回结果
+     * @return
+     */
+    public static JSONObject httpPost(String url, Map<String, String> paramMap, boolean noNeedResponse) {
+    	logger.info("PostURL: " + url);
+        //post请求返回结果
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        JSONObject jsonResult = null;
+        HttpPost method = new HttpPost(url);
+        try {
+            if (null != paramMap) {
+                //解决中文乱码问题
+            	UrlEncodedFormEntity entity = new UrlEncodedFormEntity(map2List(paramMap), "utf-8");
+                method.setEntity(entity);
+            }
+            HttpResponse result = httpClient.execute(method);
+            url = URLDecoder.decode(url, ENCODING);
+            /**请求发送成功，并得到响应**/
+            if (result.getStatusLine().getStatusCode() == 200) {
+                String str = "";
+                try {
+                    /**读取服务器返回过来的json字符串数据**/
+                    if (noNeedResponse) {
+                        return null;
+                    }
+                    str = EntityUtils.toString(result.getEntity());
+                    /**把json字符串转换成json对象**/
+                    jsonResult = JSONObject.fromObject(str);
+                } catch (Exception e) {
+                    logger.error("post请求提交失败:" + url, e);
+                }
+            }
+        } catch (IOException e) {
+            logger.error("post请求提交失败:" + url, e);
+        }
+        return jsonResult;
+    }
+ 
+    private static List<NameValuePair> map2List(Map<String, String> params) {
+    	 List<NameValuePair> nvps = new ArrayList<NameValuePair>();  
+    	  
+         Set<String> keySet = params.keySet();  
+         for (String key : keySet) {  
+             nvps.add(new BasicNameValuePair(key, params.get(key)));  
+         }  
+         return nvps;
+    }
+ 
+    /**
+     * 发送get请求
+     * @param url    路径
+     * @return
+     */
+    public static JSONObject httpGet(String url){
+        //get请求返回结果
+        JSONObject jsonResult = null;
+        try {
+//        	CloseableHttpClient client = HttpClients.createDefault();//旧的方法
+        	HttpClient client =getSecuredHttpClient(new DefaultHttpClient());
+            //发送get请求
+        	logger.info("send getTo:"+url);
+//        	？     %3F
+//
+//        	&      %26
+//
+//        	|      %124
+//
+//        	=     %3D
+//
+//        	#     %23
+//
+//        	/      %2F
+//
+//        	+     %2B
+//
+//        	%    %25
+        	url=url.trim(); 
+//        	 url = url.replaceAll("&", "%26");
+//        	 url = url.replaceAll("=", "%3D");
+//        	 url = url.replaceAll("/", "%2F");
+//        	String[] urls= url.split("");
+            HttpGet request = new HttpGet(url);
+            HttpResponse response = client.execute(request);
+        	logger.info("response:"+response.getStatusLine().getStatusCode() );
+            /**请求发送成功，并得到响应**/
+            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                /**读取服务器返回过来的json字符串数据**/
+                String strResult = EntityUtils.toString(response.getEntity());
+                /**把json字符串转换成json对象**/
+                jsonResult = JSONObject.fromObject(strResult);
+                url = URLDecoder.decode(url, ENCODING);
+            } else {
+                logger.error("get请求提交失败:" + url);
+            }
+        } catch (IOException e) {
+            logger.error("get请求提交失败:" + url, e);
+        }
+        return jsonResult;
+    }
+    
+    public static void main(String[] args) {
+    	Map<String, String> param = new HashMap<String, String>();
+    	param.put("content", "1234");
+		HttpRequestUtil.httpPost("http://192.168.1.124:8080/receive/request", param);
+	}
+    /**
+     * 重新包装httpclient对象，忽略证书验证
+     * 
+     * @param httpClient
+     * @return
+     * @author:Administrator
+     * @date:2014-9-2
+     */
+    private static DefaultHttpClient getSecuredHttpClient(HttpClient httpClient) {
+    final X509Certificate[] _AcceptedIssuers = new X509Certificate[] {};
+    try {
+    SSLContext ctx = SSLContext.getInstance("TLS");
+    X509TrustManager tm = new X509TrustManager() {
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+    return _AcceptedIssuers;
+    }
+
+    @Override
+    public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+    }
+
+    @Override
+    public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+    }
+    };
+    ctx.init(null, new javax.net.ssl.TrustManager[] { tm }, new SecureRandom());
+    SSLSocketFactory ssf = new SSLSocketFactory(ctx, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+    ClientConnectionManager ccm = httpClient.getConnectionManager();
+    SchemeRegistry sr = ccm.getSchemeRegistry();
+    sr.register(new Scheme("https", 443, ssf));
+    return new DefaultHttpClient(ccm, httpClient.getParams());
+    } catch (Exception e) {
+    System.out.println("=====:=====");
+    e.printStackTrace();
+    }
+    return null;
+    }
+}

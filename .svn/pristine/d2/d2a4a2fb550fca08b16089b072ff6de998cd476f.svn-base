@@ -1,0 +1,182 @@
+package socket.service.appMessage;
+
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.sun.jmx.snmp.Timestamp;
+
+import common.util.Tools;
+import net.sf.json.JSONObject;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.service.WaitCancelSignService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.AppMessageInDataBean;
+import socket.beans.InDataBean;
+import socket.beans.MessageBean;
+import socket.beans.SocketWriteBean;
+import socket.util.LoUtils;
+
+public class AppMessageCommand {
+
+	private static Log log = LogFactory.getLog(AppMessageCommand.class);
+
+	public static SocketWriteBean doRequest(InDataBean inDataBean, LinkedBlockingQueue<SocketWriteBean> writeQueue) {
+		if (inDataBean.getHeader().equals("0001")) {
+			return getNewClient(inDataBean, writeQueue);
+		} else if (inDataBean.getHeader().equals("0002")) {
+			return getHeartBeat(inDataBean);
+		} else {
+			return getUnknow(inDataBean);
+		}
+	}
+
+	/***
+	 * 未知的业务请求
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getUnknow(InDataBean inDataBean) {
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "9999");
+		json.put("ret_msg", "unknow message");
+		json.put("id", inDataBean.getId());
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(inDataBean.getId());
+		retBean.setResponseStr(jsonStr);
+		return retBean;
+	}
+
+	/***
+	 * 新的客户端连接
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getNewClient(InDataBean inDataBean, LinkedBlockingQueue<SocketWriteBean> writeQueue) {
+		JSONObject request=new JSONObject();
+		String userId =new String();
+		try {
+		    request = JSONObject.fromObject(inDataBean.getData());
+		    userId = request.getString("userId");
+			ClientManager.put(userId, writeQueue);
+
+		} catch (Exception e) {
+			JSONObject json = new JSONObject();
+			json.put("ret_code", "9999");
+			json.put("ret_msg", "error");
+			json.put("id", inDataBean.getId());
+			String jsonStr = json.toString();
+			SocketWriteBean retBean=new SocketWriteBean();
+			retBean.setCreateDate(new Date());
+			retBean.setUpdateDate(new Date());
+			retBean.setId(inDataBean.getId());
+			retBean.setResponseStr(jsonStr);
+			return retBean;
+		}
+		// 冀素鹏 。。。。。。。。。
+		// 调用winning service 分别获取待审核信息和待撤销审核信息
+		// 获取到以后通过特定的方法，将其唯一序列号进行组合后返回
+		Map param = new HashMap();
+	    userId = request.getString("userId");
+		param.put("code", userId);
+		
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		
+
+		WinningResponse responseWaitSign = new WinningResponse();
+
+		responseWaitSign = QueryDocListService.QueryDocList(requestW);
+		
+		List responseWaitSignData = responseWaitSign.getRet_data();
+		
+		StringBuilder retDat = new StringBuilder();
+		if (responseWaitSign.isSuccess()) {
+				for (int i = 0; i < responseWaitSignData.size(); i++) {
+					Map data = (Map) responseWaitSignData.get(i);
+					AppMessageInDataBean outData=new AppMessageInDataBean();
+					outData.setMessageCode(data.get("recordId").toString(),data.get("caseHisId").toString(),data.get("diagnoseId").toString());
+					if (responseWaitSignData.size() > 0) {//该步即不会第一位有逗号，也防止最后一位拼接逗号！
+		                retDat.append(",");
+		            }
+		            retDat.append(outData.getMessageCode());
+				}} 
+		
+	
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "0000");
+		json.put("ret_msg", "success");
+		json.put("ret_count", "3");
+		json.put("ret_data", retDat.toString());
+		json.put("id", inDataBean.getId());
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(inDataBean.getId());
+		retBean.setResponseStr(jsonStr);
+		return retBean;
+	}
+
+	/***
+	 * 客户端心跳连接
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getHeartBeat(InDataBean inDataBean) {
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "0000");
+		json.put("ret_msg", "success");
+		json.put("ret_count", "1");
+		json.put("ret_data", new Timestamp().getDateTime());
+		json.put("id", inDataBean.getId());
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(inDataBean.getId());
+		retBean.setResponseStr(jsonStr);
+		return retBean;
+	}
+
+	/***
+	 * 向客户端发送新的消息通知
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static void setMessages(MessageBean inData) {
+		String id=getRandomId();
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "0000");
+		json.put("ret_msg", "success");
+		json.put("ret_count", "1");
+		json.put("ret_data", inData.getMessageCode());
+		json.put("id", id);
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(id);
+		retBean.setResponseStr(jsonStr);
+		ClientManager.send(inData.getUserId(), retBean);
+	}
+	private static String getRandomId(){
+        return Tools.formatDateStr(Tools.getSysDate(""), "", "yyyyMMddHHmmss")
+                + Tools.genRandomNum(6);
+    }
+}

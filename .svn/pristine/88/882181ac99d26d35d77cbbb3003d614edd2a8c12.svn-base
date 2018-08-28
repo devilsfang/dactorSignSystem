@@ -1,0 +1,132 @@
+package test.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.CancelSignService;
+import plugins.winning.inpatient.service.SignOpinionFillService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.command.QueryPatientServlet;
+import servlet.inDataBean.CancelSignInDataBean;
+import servlet.inDataBean.SignOpinionFillInDataBean;
+
+/**
+ * Servlet implementation class CancelSignServlet
+ */
+@WebServlet("/test/CancelSign")
+public class CancelSignServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	boolean test = false; 
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public CancelSignServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+		// TODO Auto-generated method stub
+		protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+			// TODO Auto-generated method stub
+			CancelSignInDataBean inData=new CancelSignInDataBean();
+			VoResponse voResponse = new VoResponse();
+			try {
+				inData.setBookId(request.getParameter("bookId"));
+
+				if (StringUtil.isEmpty(inData.getBookId())  ) {
+					throw new Exception("参数不能为空");
+				}
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("参数异常：" + e.getMessage());
+				HttpResponseUtil.response(voResponse, response);
+				return;
+			}
+			WinningResponse responseW = new WinningResponse();
+			if (false) {
+			
+			
+
+			/***
+			 * 将inDataBean转换为winning的request
+			 */
+			Map param = new HashMap();
+			param.put("bookId", inData.getBookId());
+			WinningRequest requestW = new WinningRequest();
+			requestW.setParam(param);
+			/***
+			 * 调用winning的服务进行业务请求
+			 */
+			 responseW = CancelSignService.CancelSign(requestW);
+			}else {
+				Map testData = new HashMap();
+				
+				if(true){
+					responseW.setRet_code("0000");
+					responseW.setRet_msg("");
+				}else{
+					responseW.setRet_code("9999");
+					responseW.setRet_msg("不存在此用户");
+				}
+				
+			}
+			
+			
+			
+			
+			
+			/***
+			 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+			 * 3.使用工具类，将outData通过response响应给请求端
+			 */
+
+			
+			if(responseW.isSuccess()){
+				try{
+					voResponse.setRet_code(Constains.SUCCESS_CODE);
+					voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				}catch(Exception e){
+					voResponse.setRet_code(Constains.ERROR_CODE);
+					voResponse.setRet_msg("返回数据异常："+e.getMessage());
+				}
+				
+			}else{
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("访问异常:"+responseW.getRet_msg());
+			}
+			
+			HttpResponseUtil.response(voResponse, response);
+		}
+		public void init() throws ServletException {
+			// Put your code here
+			String packageName = QueryPatientServlet.class.getPackage().getName();
+			if (packageName.indexOf("test.") >= 0)
+				test = true;
+		}
+	
+
+}

@@ -1,0 +1,40 @@
+package servlet.inDataBean;
+
+public class SignDetailInDataBean {
+	String bookId;
+	String iCaseId;
+    String iDiagnoseId;
+    String iRecordId;
+    public String getiRecordId() {
+		return iRecordId;
+	}
+
+	public void setiRecordId(String iRecordId) {
+		this.iRecordId = iRecordId;
+	}
+	public String getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+
+	public String getiCaseId() {
+		return iCaseId;
+	}
+
+	public void setiCaseId(String iCaseId) {
+		this.iCaseId = iCaseId;
+	}
+
+	public String getiDiagnoseId() {
+		return iDiagnoseId;
+	}
+
+	public void setiDiagnoseId(String iDiagnoseId) {
+		this.iDiagnoseId = iDiagnoseId;
+	}
+	
+
+}

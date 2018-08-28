@@ -1,0 +1,18 @@
+package test;
+
+import org.junit.Test;
+
+import servlet.outDataBean.LoginOutDataBean;
+
+import net.sf.json.JSONObject;
+
+public class TestAA {
+
+	@Test
+	public void testA(){
+		String t="1.0";
+		String ta[]=t.split("\\.").clone();
+		System.out.println(ta[0]);
+		
+	}
+}

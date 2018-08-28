@@ -1,0 +1,33 @@
+package com.java.servlet.outDataBean;
+
+public class SignHistoryOpinionOutDataBean {
+	String totalNum;
+	String checkName;
+	String rejectDate;
+	String rejectReason;
+	public String getTotalNum() {
+		return totalNum;
+	}
+	public void setTotalNum(String totalNum) {
+		this.totalNum = totalNum;
+	}
+	public String getCheckName() {
+		return checkName;
+	}
+	public void setCheckName(String checkName) {
+		this.checkName = checkName;
+	}
+	public String getRejectDate() {
+		return rejectDate;
+	}
+	public void setRejectDate(String rejectDate) {
+		this.rejectDate = rejectDate;
+	}
+	public String getRejectReason() {
+		return rejectReason;
+	}
+	public void setRejectReason(String rejectReason) {
+		this.rejectReason = rejectReason;
+	}
+
+}

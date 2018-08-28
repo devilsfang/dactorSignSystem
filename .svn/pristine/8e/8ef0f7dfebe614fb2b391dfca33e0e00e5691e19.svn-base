@@ -1,0 +1,37 @@
+package plugins.winning.inpatient.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import common.util.Constains;
+import common.util.HttpRequestUtil;
+import plugins.winning.WinnigConfig;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+public class PatientDetailService {
+	public static WinningResponse PatientDetail(WinningRequest request){
+		WinningResponse response=new WinningResponse();
+		
+		//JSONObject json=HttpRequestUtil.httpPost(WinnigConfig.PatientDetailUrl, request.getParam());
+		String strResult="{\"ret_code\":\"0000\",\"ret_msg\":\"成功\",\"ret_count\":1,\"ret_data\":\"\\r\\n入院记录\\r\\n    姓    名：张丽  \\r\\n    性    别：女  \\r\\n    年    龄：39岁  \\r\\n    民    族：汉族  \\r\\n    婚姻状况：已婚 \\r\\n出 生 地：山西省潞城市\\r\\n职    业：职员\\r\\n入院时间：2018-06-27-17:13\\r\\n记录时间：2018-06-27-18:06\\r\\n病史陈述者：本人\\r\\n    住    址：潞城市中华西街\\r\\n    主  诉：停经40周+5，发现高血压3天，不规律腹憋2天。\\r\\n    现病史：平素月经规律，LMP:2017-09-15，EDC:2018-06-22。停经40余天自测尿HCG（+），并出现恶心，呕吐等早孕反应。孕4月余自觉胎动，活跃至今。孕期行唐氏筛查21-三体1:297,未进一步检查；行四维彩超未见明显异常，行OGTT正常。孕期无头晕、眼花、心悸等不适。孕期无用药史，孕期无有害物质接触史；近2周出现双下肢水肿，休息后未见明显好转；无阴道流水史。近3天监测血压在140/90mmHg左右，最高血压150/95mmHg，未化验尿常规，孕妇已有不规律腹憋2天，遂住院待产。停经以来精神良好，食欲尚可，睡眠良好，大小便正常。\\r\\n    既往史：既往身体健康。否认\\\"肝炎\\\"、\\\"结核\\\"等传染病病史及接触史，否认手术、外伤史，无药物、食物过敏史，无输血史。\\r\\n    个人史：生于原籍，未到过疫区，无烟、酒等不良嗜好。\\r\\n    月经史：15岁4-5/28天，量中，无痛经，末次月经：2017-09-15。\\r\\n    婚育史：23岁结婚，丈夫身体健康。G3P1，2002年孕足月分娩一男婴，体重3700g，身体健康；早孕人工流产2次。\\r\\n    家族史：其母亲患高血压病。\\r\\n体格检查\\r\\n    体温36.0℃ 脉搏87次/分 呼吸19次/分  血压156/85mmHg  身高156cm  体重74Kg\\r\\n    一般情况：发育正常、营养中等，意识清晰，精神好，查体合作。\\r\\n    皮肤黏膜：皮肤弹性良好，无皮疹、无紫癜、无蜘蛛痣，水肿（++）。\\r\\n    淋巴结：全身浅表淋巴结未触及肿大。\\r\\n    头颅：无畸形，毛发分布均匀，色泽黑。无瘢痕、肿块、癣及结节。\\r\\n    眼：眼睑无水肿，结膜无充血，巩膜无黄染，双侧瞳孔等大等圆，对光反应灵敏。\\r\\n    耳：外耳无畸形，无牵拉痛，外耳道无出血、分泌物，乳突无压痛，听力正常。\\r\\n    鼻：无畸形，无鼻翼扇动，鼻道无阻塞，无分泌物、出血，副鼻窦区无压痛。\\r\\n    口腔：口腔粘膜无出血；牙齿排列整齐；扁桃体无肿大；咽部无充血；悬雍垂居中。\\r\\n    颈部：无抵抗，无颈静脉怒张；气管位置居中；甲状腺不肿大，未触及异常结节及震颤。\\r\\n    胸部：胸廓对称，形状正常，肋间平坦，运动正常，无局部膨隆、肿块及静脉曲张，无压痛；乳房对称，乳头凸，无肿块。\\r\\n    肺脏\\r\\n    视诊：两侧呼吸运动一致，呈胸式呼吸，肋间隙无增宽、变窄。\\r\\n    触诊：语音震颤两侧相等，无胸膜摩擦感。\\r\\n    叩诊：叩诊音为清音；肺下界肩胛下角线第10肋间，呼吸移动度3厘米。\\r\\n    听诊：呼吸音及语音传导两侧对称，未闻及干湿罗音、摩擦音。\\r\\n    心脏\\r\\n    视诊：心前区无隆起、无异常搏动，心尖搏动在第五肋间、左锁中线内1cm处。\\r\\n    触诊：心尖搏动在左第5肋间、锁中线内1cm处搏动最强，无抬举性搏动，无摩擦感、无震颤。\\r\\n    叩诊：心脏浊音界正常，如下表：\\r\\n右（cm）\\r\\n 肋间\\r\\n 左（cm）\\r\\n2.0\\r\\nⅡ\\r\\n2.5\\r\\n2.5\\r\\nⅢ\\r\\n3.5\\r\\n3.5\\r\\nⅣ\\r\\n6.5\\r\\n\\r\\nⅤ\\r\\n8.0\\r\\n　　　　　　　　　　　　　（锁骨中线距前正中线　9　cm）\\r\\n听诊：心率87次/分、律齐，心音有力，各瓣膜听诊区心音正常，未闻及杂音。\\r\\n    腹部\\r\\n    视诊：膨隆、对称，无皮疹、无溃疡；无静脉曲张。\\r\\n    触诊：腹壁软，无压痛、反跳痛，肝脾触及不满意，子宫增大，宫内充盈，可触及胎体。\\r\\n    叩诊：肝浊音界正常，肝肾区无叩击痛，无移动性浊音。\\r\\n    听诊：肠鸣声正常，未闻及血管杂音等。\\r\\n    肛门：无外痔，无溃疡，无瘢痕。\\r\\n    外生殖器：外阴呈产型，无瘢痕、溃疡、结节等。\\r\\n    脊柱：生理弯曲正常，无畸形、无压痛。\\r\\n    四肢：无畸形, 无水肿；无静脉曲张；肌张力正常，关节无红肿，运动正常。\\r\\n    神经系统：生理反射存在，病理反射未引出。\\r\\n    专科检查：\\r\\n    产检:宫高39cm，腹围106cm，宫缩不规律，先露头浮，胎位头位，胎心140次/分。骨盆外测量：25-26.5-19-8.0cm。胎膜未破，宫颈未消，宫口未开，胎心监护NST反应型，胎儿估重3600g。\\r\\n辅 助 检 查\\r\\n    化验检查：\\r\\n    血常规：RBC3.65×1012/L  HGB123g/L  PLT264×109/L  WBC 9.3×109/L  \\r\\n    B超：晚期妊娠  单活胎  头位  脐绕颈可能\\r\\n                                      入院诊断：\\r\\n\\t                                          1、宫内孕40周+5G4P1头位先兆临产\\r\\n                                          2、子痫前期？\\r\\n                                          3、高龄产妇\\r\\n医生签名：                           \"}";
+		JSONObject json=JSONObject.fromObject(strResult);
+		if(json==null){
+			response.setRet_code(Constains.ERROR_CODE);
+			response.setRet_msg("网络访问异常");
+		}else{
+			JSONArray ja=json.getJSONArray("ret_data");
+			List<Map> data=JSONArray.toList(ja, new HashMap(), new JsonConfig());
+			response=(WinningResponse) JSONObject.toBean(json, WinningResponse.class);
+			response.setRet_data(data);
+		}
+			
+		return response;
+		
+	}
+}

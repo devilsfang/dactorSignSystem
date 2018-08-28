@@ -1,0 +1,41 @@
+package plugins.winning.inpatient.vo;
+
+import java.util.Map;
+
+public class WinningResponse {
+	private Map retData;
+	String retCode;
+	String retMsg;
+	
+	public boolean isSuccess(){
+		if("0000".equals(retCode)){
+			return true;
+		}else
+			return false;
+	}
+
+	public String getRetCode() {
+		return retCode;
+	}
+
+	public void setRetCode(String retCode) {
+		this.retCode = retCode;
+	}
+
+	public String getRetMsg() {
+		return retMsg;
+	}
+
+	public void setRetMsg(String retMsg) {
+		this.retMsg = retMsg;
+	}
+
+	public Map getRetData() {
+		return retData;
+	}
+
+	public void setRetData(Map retData) {
+		this.retData = retData;
+	}
+	
+}

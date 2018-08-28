@@ -1,0 +1,35 @@
+/**
+ * 
+ */
+$(function() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+});
+function loadPage() {
+	return $("#page").ligerPage(
+			  { 
+				    title : "批改意见",
+					backButton : false,
+					//backPage : "/" ,
+					propertyButton : false,
+					prefixID : "scsContacts_cx",
+					iconEnable : false,
+					labelWidth : 0,
+					content: [{
+						id : "opion",
+						group : "<div><img src='/dssweb/resource/images/icon/history.png' style='width:20px'/></div>" +
+								"<span style='text-align:center;font-size:13px;color:black'>" +
+								"请输入批改意见"+"</span>",
+					   /*	hideGroup:false,*/
+						type : "text",
+						rows : true,
+						maxLength:300,
+						minRows : 3,
+						maxRows : 10,
+						display : " "
+						
+					}]
+			  }		
+			);
+}

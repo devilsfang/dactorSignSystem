@@ -1,0 +1,244 @@
+package socket.service.appMessage;
+
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.sun.jmx.snmp.Timestamp;
+
+import common.util.Tools;
+import net.sf.json.JSONObject;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.AppMessageInDataBean;
+import socket.beans.InDataBean;
+import socket.beans.MessageBean;
+import socket.beans.SocketWriteBean;
+import socket.service.appMessage.ClientManager.Client;
+
+public class AppMessageCommand {
+
+	private static Log log = LogFactory.getLog(AppMessageCommand.class);
+
+	public static SocketWriteBean doRequest(InDataBean inDataBean, LinkedBlockingQueue<SocketWriteBean> writeQueue,Map adapterMap,Socket socket) {
+		if (inDataBean.getHeader().equals(Constains.NewClient)) {
+			return getNewClient(inDataBean, writeQueue,adapterMap,socket);
+		} else if (inDataBean.getHeader().equals(Constains.HeartBean)) {
+			return getHeartBeat(inDataBean,writeQueue,adapterMap,socket);
+		} else if (inDataBean.getHeader().equals(Constains.NewMsg)) {
+			return putMessageRet(inDataBean,adapterMap);
+		} else if (inDataBean.getHeader().equals(Constains.RemoveMsg)) {
+			return putMessageRet(inDataBean,adapterMap);
+		}else {
+			return getUnknow(inDataBean);
+		}
+	}
+
+	/***
+	 * 对app的应答进行处理
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean putMessageRet(InDataBean inDataBean,Map<String ,SocketWriteBean> adapterMap) {
+		SocketWriteBean bean=adapterMap.get(inDataBean.getId());
+		bean.setUpdateDate(new Date());
+		bean.setResponseStr(inDataBean.getData());
+		return null;
+	}
+	/***
+	 * 未知的业务请求
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getUnknow(InDataBean inDataBean) {
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "9999");
+		json.put("ret_msg", "unknow message");
+		json.put("id", inDataBean.getId());
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(inDataBean.getId());
+		retBean.setRequestStr("0099"+jsonStr);
+		return retBean;
+	}
+
+	/***
+	 * 新的客户端连接
+	 * 
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getNewClient(InDataBean inDataBean, LinkedBlockingQueue<SocketWriteBean> writeQueue,Map adapterMap,Socket socket) {
+		JSONObject request=new JSONObject();
+		String userId =new String();
+		String appId=null;
+		try {
+		    request = JSONObject.fromObject(inDataBean.getData());
+		    userId = request.getString("userId");
+		    appId= request.getString("appId");
+		    Client clientOld=ClientManager.getClient(userId);
+		    if(clientOld.getAppId().equals(appId))
+		    	ClientManager.put(userId,Constains.Android,appId, writeQueue,adapterMap,socket);
+		    else{
+		    	//新的客户端，需要将旧的客户端发送登出命令
+		    	ClientManager.logOut(userId);
+		    	ClientManager.put(userId,Constains.Android,appId, writeQueue,adapterMap,socket);
+		    }
+
+		} catch (Exception e) {
+			JSONObject json = new JSONObject();
+			json.put("ret_code", "9999");
+			json.put("ret_msg", "error");
+			json.put("id", inDataBean.getId());
+			String jsonStr = json.toString();
+			SocketWriteBean retBean=new SocketWriteBean();
+			retBean.setCreateDate(new Date());
+			retBean.setUpdateDate(new Date());
+			retBean.setId(inDataBean.getId());
+			retBean.setResponseStr(Constains.NewClient+jsonStr);
+			return retBean;
+		}
+		// 调用winning service 分别获取待审核信息和待撤销审核信息
+		// 获取到以后通过特定的方法，将其唯一序列号进行组合后返回
+		Map param = new HashMap();
+	    userId = request.getString("userId");
+		param.put("code", userId);
+		
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		
+
+		WinningResponse responseWaitSign = new WinningResponse();
+
+		responseWaitSign = QueryDocListService.QueryDocList(requestW);
+		
+		List responseWaitSignData = responseWaitSign.getRet_data();
+		
+		StringBuilder retDat = new StringBuilder();
+		if (responseWaitSign.isSuccess()) {
+			for (int i = 0; i < responseWaitSignData.size(); i++) {
+				Map data = (Map) responseWaitSignData.get(i);
+				AppMessageInDataBean outData = new AppMessageInDataBean();
+				outData.setMessageCode(data.get("recordId").toString(), data.get("caseHisId").toString(),
+						data.get("diagnoseId").toString());
+				if (responseWaitSignData.size() > 0) {// 该步即不会第一位有逗号，也防止最后一位拼接逗号！
+					retDat.append(",");
+				}
+				retDat.append(outData.getMessageCode());
+			}
+		}
+	
+		String id=getRandomId();
+		JSONObject json = new JSONObject();
+		json.put("ret_code", "0000");
+		json.put("ret_msg", "success");
+		json.put("ret_count", retDat.length());
+		json.put("ret_data", retDat.toString());
+		json.put("id", id);
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(id);
+		retBean.setRequestStr(Constains.NewMsg+jsonStr);
+		if(retDat.length()>0) 
+			return retBean;
+		else return null;
+	}
+
+	/***
+	 * 客户端心跳连接
+	 * 还是需要对心跳做客户是否在线的检测，如果服务器重启，会导致map丢失，引起无法找到客户连接而无法发送数据的问题
+	 * @param inDataBean
+	 * @return
+	 */
+	public static SocketWriteBean getHeartBeat(InDataBean inDataBean,LinkedBlockingQueue<SocketWriteBean> writeQueue,Map adapterMap,Socket socket) {
+	
+		JSONObject json = new JSONObject();
+		JSONObject request=JSONObject.fromObject(inDataBean.getData());
+		try{
+			if(request.get("userId")!=null){
+				Client client=ClientManager.getClient(request.get("userId").toString());
+				if(client==null){
+					ClientManager.put(request.get("userId").toString(),Constains.Android,request.get("appId").toString(), writeQueue,adapterMap,socket);
+				}else{
+					//存在客户，但是appId不相同的话需要此心跳停止
+					if(!client.getAppId().equals(request.get("appId").toString())){
+						ClientManager.logOut(request.get("userId").toString());
+						return null;
+					}
+				}
+			}
+			json.put("ret_code", "0000");
+			json.put("ret_msg", "success");
+			json.put("ret_count", "1");
+			json.put("ret_data", new Timestamp().getDateTime());
+			json.put("id", inDataBean.getId());
+		}catch(Exception e){
+			json.put("ret_code", "9999");
+			json.put("ret_msg", "error");
+			json.put("ret_count", "1");
+			json.put("ret_data", new Timestamp().getDateTime());
+			json.put("id", inDataBean.getId());
+		}
+		String ret;
+		ret = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(inDataBean.getId());
+		retBean.setRequestStr(Constains.HeartBean+ret);
+		return retBean;
+	}
+
+	/***
+	 * 向客户端发送新的消息通知
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public static void setMessages(MessageBean inData) {
+		String id=getRandomId();
+		JSONObject json = new JSONObject();
+//		json.put("ret_code", "0000");
+//		json.put("ret_msg", "success");
+//		json.put("ret_count", "1");
+		json.put("ret_data", inData.getMessageCode());
+		json.put("id", id);
+		String jsonStr = json.toString();
+		SocketWriteBean retBean=new SocketWriteBean();
+		retBean.setCreateDate(new Date());
+		retBean.setUpdateDate(new Date());
+		retBean.setId(id);
+		if(inData.getType().equals("0001")||inData.getType().equals("0002"))
+			retBean.setRequestStr("0003"+jsonStr);
+		else if(inData.getType().equals("0003")||inData.getType().equals("0004"))
+			retBean.setRequestStr("0004"+jsonStr);
+		else
+			return ;
+		int sendState=ClientManager.send(inData.getUserId(), retBean);
+//		1.成功，2.失败，3超时,4 异常
+		if(sendState!=1){
+			//可以放到缓存中，每隔一段时间就推送一次，可以解决用户短时间失去信号导致断开连接而心跳暂停又没有检查出异常的问题
+			//这里需要对socket的断线重连进行实际测试
+			//但是实际上目前用户在断开链接以后会尝试新的连接，而新的连接会从接口请求未处理数据，然后通知到用户的app
+			System.out.println("发送APP失败："+sendState);
+		}
+	}
+	private static String getRandomId(){
+        return Tools.formatDateStr(Tools.getSysDate(""), "", "yyyyMMddHHmmss")
+                + Tools.genRandomNum(6);
+    }
+}

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<title>首页</title>
+<script src="/dssweb/js/UI2.0/js/jsloader.js" type="text/javascript"></script>
+<script src="/dssweb/js/UI2.0/js/allUIPkg.js" type="text/javascript"></script>
+<script src="/dssweb/resource/js/patientSkin.js" type="text/javascript"></script>
+<script src="js/allRecord.js" type="text/javascript"></script>
+<link rel="stylesheet" href="css/allRecord.css" type="text/css"></link>
+</head>
+<body>
+<div id="page"></div>
+</body>
+</html>

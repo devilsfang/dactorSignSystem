@@ -1,0 +1,164 @@
+/**
+ * 
+ */
+$(function() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+	iconInit();
+});
+
+function loadPage() {
+	return $("#page")
+		.ligerPage(
+			{
+				title : " ",
+				backButton : "返回",
+
+				propertyButton : false,
+				prefixID : "scsContacts_cx",
+				iconEnable : false,
+				content : [ {
+					id : "userInfo",
+					group : "病人详情",
+					hideGroup : true,
+					type : "grid",
+					hideGroupTips : true,
+					unformat : true,
+					gridData : {
+						id : 1,
+						name : "吴强",
+						sex : "男",
+						number : "12345678",
+						doctor : "任虎虎",
+						age : "8",
+						kind : "儿科",
+						imgSrc : "/dssweb/resource/images/icon/boyHead.jpg"
+					},
+					columns : [ {
+						cells : [ {
+							render : function(item) {
+								var html = $("<div></div>");
+								var patientShow = $("<div id='patientShow'></div>");
+								var patientLeft = $("<div id='patientLeft'></div>");
+								var patientRight = $("<div id='patientRight'></div>");
+								var patientImg = $("<div id='patientImg'></div>");
+								var patientInfo = $("<div id='patientInfo'></div>");
+								var patientName = $("<div id='patientName'></div>");
+								var patientNumber = $("<div id='patientNumber'></div>");
+								var doctorInfo = $("<div id='doctorInfo'></div>");
+								var doctorType = $("<div id='doctorType'></div>");
+								var doctorName = $("<div id='doctorName'></div>");
+								var doctorCall = $("<div id='doctorCall'></div>");
+								html.append(patientShow);
+								patientShow.append(patientLeft).append(patientRight);
+								patientLeft.append(patientImg).append(patientInfo);
+								patientInfo.append(patientName).append(patientNumber);
+								patientRight.append(doctorInfo).append(doctorCall);
+								doctorInfo.append(doctorType).append(doctorName);
+								patientImg.append("<img src=" + " '" + item.imgSrc + "'" + "/>");
+								patientName.append($("<span >" + item.name + "</span>" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp" + "<span >" + item.sex + "&nbsp" + item.age + "岁" + "</span>"));
+								patientNumber.append(item.number);
+								doctorType.append($("<span id='secret'><img src='/dssweb/resource/images/icon/eye.png' style='height:15px'/>" + item.kind + "</span>"));
+								doctorName.append("主治医师" + "  " + item.doctor);
+								doctorCall.append("<img src='/dssweb/resource/images/icon/tel.png' style='width:20px;height:20px;'/>");
+								return html.html();
+
+
+							},
+						} ]
+					} ]
+				}, {
+					group : " ",
+
+					hideGroup : true,
+					hideGrouptTips: true,
+					type : "tabPage",
+					onChange:revert,
+					id : "myContacts",
+					onAfterBuild : changeTab,
+					pages : [
+							{
+								tabPage : true,
+								tabId : "myCollection",
+								prefixID : "myCollection",
+								tabName : "<span>返回<span>",
+
+							}, {
+								tabPage : true,
+								tabId : "scsStudentContacts",
+								prefixID : "scsStudentContacts",
+								tabName : "",
+								labelWidth :70,
+								content : []
+							}, {
+								tabPage : true,
+								tabId : "scsStudentContacts",
+								prefixID : "scsStudentContacts",
+								tabName : "患者详情 ",
+								labelWidth : 70,
+								content : [
+											{
+												id : "userInfo",
+												group : "zhe",
+												hideGroup:true,
+												type : "grid",
+												hideGrouptTips: true,
+												/*unformat:true,	*/
+												gridData:{date:"入院日期："+new Date().Format("yyyy-MM-dd"),condition:"入院情况：主因停经33+3周，不规律腹憋1小时",
+													    details:"查体：体温36.8摄氏度脉搏80/分呼吸19次/分血压100/60mmHg心肺未闻及明显异常。腹部膨隆，子宫存盈，可触及胎体。产检：宫高33cm，腹围89cm,宫缩不规律，先露头半定，胎位LOA",
+													    Diagnosis:"入院诊断：先兆早产  诊疗经过：入院后完善检查，观察胎心、宫缩，静点硫酸镁保胎治疗"},
+												columns:[{
+													
+													cells:[{
+												   display:	"date",
+												   class: "spanDetails"
+													},{},{
+													 display:"condition",	
+													 class: "spanDetails"
+													},{},{
+													display:"details",
+													class:"spanDetails"
+													},{},{
+														display:" Diagnosis" ,
+														class:"spanDetails"	
+													}
+													]
+													
+												}]	    
+												
+												
+												
+											} ]
+							} ]
+				},
+
+
+					 
+				]
+			})
+}
+function changeTab(page, tabPage) {
+//	page.changeTab(tabPage, 2);
+}
+function revert(target,toIndex){
+	if(toIndex==0)
+		window.location.href = "/dssweb/pages/detail/record.html";
+}
+
+var iconInit_i=1;
+function iconInit(){
+
+ $("#icon1").click(function(){
+	 
+	 if(iconInit_i%2==1){
+	 $("#deTailsShow").css({  "margin-right":"-60px"}); 
+	$("#icon2").css({transform:"rotate(180deg)"});
+	 }else{
+		 $("#icon2").css({transform:"rotate(360deg)"});
+		 $("#deTailsShow").css({  "margin-right":"50px"}); 
+		
+	 }
+	 iconInit_i++; 
+ });
+}

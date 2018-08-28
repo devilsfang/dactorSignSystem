@@ -1,0 +1,190 @@
+package servlet.command;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.junit.Test;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.LoginInDataBean;
+import servlet.outDataBean.DocListOutDataBean;
+import servlet.outDataBean.LoginOutDataBean;
+
+import net.sf.json.JSONObject;
+
+@WebServlet("/test/LoginApp")
+public class LoginAppServlet extends HttpServlet {
+
+	boolean test = false;
+
+	/**
+	 * Constructor of the object.
+	 */
+	public LoginAppServlet() {
+		super();
+	}
+
+	/**
+	 * Destruction of the servlet. <br>
+	 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+	 * The doGet method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to get.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doPost(request, response);
+	}
+
+	/**
+	 * The doPost method of the servlet. <br>
+	 *
+	 * This method is called when a form has its tag value method equals to
+	 * post.
+	 * 
+	 * @param request
+	 *            the request send by the client to the server
+	 * @param response
+	 *            the response send by the server to the client
+	 * @throws ServletException
+	 *             if an error occurred
+	 * @throws IOException
+	 *             if an error occurred
+	 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		/***
+		 * 将request解析为inDataBean
+		 */
+		LoginInDataBean inData = new LoginInDataBean();
+		VoResponse voResponse = new VoResponse();
+		try {
+			inData.setUserName(request.getParameter("userName").trim());
+			inData.setPassWord(request.getParameter("password"));
+
+			if (StringUtil.isEmpty(inData.getUserName()) || StringUtil.isEmpty(inData.getPassWord())) {
+				throw new Exception("参数不能为空");
+			}
+		} catch (Exception e) {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("参数异常：" + e.getMessage());
+			HttpResponseUtil.response(voResponse, response);
+			return;
+		}
+		WinningResponse responseW = new WinningResponse();
+		if (!test) {
+			/***
+			 * 将inDataBean转换为winning的request
+			 */
+			Map param = new HashMap();
+			param.put("username", inData.getUserName());
+			param.put("pwd", inData.getPassWord());
+			WinningRequest requestW = new WinningRequest();
+			requestW.setParam(param);
+			/***
+			 * 调用winning的服务进行业务请求
+			 */
+			responseW = QueryDocListService.QueryDocList(requestW);
+
+		} else {
+			List retDat=new ArrayList();
+			Map testData = new HashMap();
+			testData.put("userId","01" );
+			testData.put("StaffName","001" );
+			testData.put("HospitalName","某某医院" );
+			testData.put("DeptName","某某某科室" );
+			testData.put("titl","某某职务" );
+			testData.put("cSex","男" );
+			retDat.add(testData);
+			if(inData.getUserName().equals("123")){
+				responseW.setRetCode("0000");
+				responseW.setRetMsg("");
+				responseW.setRetData(retDat);
+			}else{
+				responseW.setRetCode("9999");
+				responseW.setRetMsg("不存在此用户");
+			}
+			
+		}
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		LoginOutDataBean outData = new LoginOutDataBean();
+		List responseWretData = responseW.getRetData();
+		if (responseW.isSuccess()) {
+			try {
+				for(int i=0;i<responseWretData.size();i++){
+				Map data=(Map) responseWretData.get(i);
+				outData.setUserId(data.get("userId").toString());
+				outData.setName(data.get("StaffName").toString());
+				outData.setHospitalName(data.get("HospitalName").toString());
+				outData.setDeptName(data.get("DeptName").toString());
+				outData.setTitl(data.get("titl").toString());
+				outData.setcSex(data.get("cSex").toString());
+				outData.setAge("23");
+				outData.setTelephone("15546789045");
+				}
+				voResponse.setRet_count(1);
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(outData);
+			} catch (Exception e) {
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常：" + e.getMessage());
+			}
+
+		} else {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("登录失败：" + responseW.getRetMsg());
+		}
+
+		HttpResponseUtil.response(voResponse, response);
+
+	}
+
+	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException
+	 *             if an error occurs
+	 */
+	public void init() throws ServletException {
+		// Put your code here
+		String packageName = LoginAppServlet.class.getPackage().getName();
+		if (packageName.indexOf("test.") >= 0)
+			test = true;
+	}
+
+}

@@ -1,0 +1,28 @@
+package plugins.winning.inpatient.service;
+
+import common.util.Constains;
+import common.util.HttpRequestUtil;
+import plugins.winning.WinnigConfig;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+
+import net.sf.json.JSONObject;
+
+public class QueryPatientService {
+	public static WinningResponse QueryPatient(WinningRequest request){
+		WinningResponse response=new WinningResponse();
+		
+		JSONObject json=HttpRequestUtil.httpPost(WinnigConfig.QueryPatientUrl, request.getParam());
+		if(json==null){
+			response.setRetCode(Constains.ERROR_CODE);
+			response.setRetMsg("网络访问异常");
+		}else{
+			response.setRetCode(Constains.SUCCESS_CODE);
+			response.setRetData(json);
+		}
+			
+		return response;
+		
+	}
+
+}

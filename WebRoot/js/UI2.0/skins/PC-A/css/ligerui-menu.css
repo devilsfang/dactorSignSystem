@@ -1,0 +1,63 @@
+
+/* --------------
+   *   menu  *
+* ------------ */
+.m-menu{height: 36px;
+	min-width: 60px;
+	padding-left: 20px;
+	padding-right: 20px;
+	display: block;
+	float: left;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 36px;
+	text-decoration: none;
+	text-align: center;
+	border-radius: 18px;
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-bottom: 10px;}
+.menu-box{
+	margin-top: 7px;
+	margin-right: auto;
+	margin-bottom: 0px;
+	margin-left: auto;
+}
+.m-menu-on{background-color: #098cbc;
+	color: #FFFFFF;}
+.m-menu-off{background-color: #3cc3f5;
+	color: #098CBC;}
+.m-menu-on:hover{
+cursor: default;	
+}
+.m-menu-off:hover{
+	color: #FFF;
+	background-color: #0DB4F2;
+}
+.m-menu-icon {
+	height: 36px;
+	width: 36px;
+	display: block;
+	cursor: pointer;
+	font-size: 16px;
+	line-height: 36px;
+	text-decoration: none;
+	text-align: center;
+	border-radius: 18px;
+	margin-right: 10px;
+	background-position: 0px -36px;
+}
+.m-menu-icon-box-l{
+	position: absolute;
+	left: 10px;
+	top: 7px;
+	width:40px;
+}
+.m-menu-icon-box-l .m-menu-icon{float: left;}
+.m-menu-icon-box-r{
+	position: absolute;
+	right: 0px;
+	top: 7px;
+	width:40px;
+}
+.m-menu-icon-box-r .m-menu-icon{float: right;}

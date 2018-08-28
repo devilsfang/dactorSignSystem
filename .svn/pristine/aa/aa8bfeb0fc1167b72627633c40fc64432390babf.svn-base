@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<title>下载详情页</title>
+<link href="css/downloadDetail.css" rel="stylesheet" type="text/css">
+<script src="/dssweb/js/desktop/jquery/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="js/downloadDetail.js"></script>
+</head>
+<body>
+	<div id="downloadBar">
+		<div id="winningImage">
+			<image id="wnImage"
+				src="/dssweb/resource/images/download/downloadBar.gif">
+		</div>
+	</div>
+	<div id="blendStep">安装步骤说明</div>
+	<div class="word">
+		1、由于系统无法检测到您的手机版本，请选择您手机适合的安装版本进行下载
+	</div>
+	<div id="imgFirst">
+		<image class="img"
+			src="/dssweb/resource/images/download/blendFirst.png">
+	</div>
+	<div id="appleStep" class="stepWord">苹果安装步骤</div>
+	<div id="andriodStep" class="stepWord">安卓安装步骤</div>
+	
+	
+</body>
+</html>

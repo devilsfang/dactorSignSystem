@@ -1,0 +1,141 @@
+package servlet.command;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.DocListInDataBean;
+import servlet.inDataBean.LoginInDataBean;
+import servlet.outDataBean.DocListOutDataBean;
+import servlet.outDataBean.LoginOutDataBean;
+
+@WebServlet("/DocList")
+public class DocListServlet extends HttpServlet {
+
+	/**
+		 * Constructor of the object.
+		 */
+	public DocListServlet() {
+		super();
+	}
+
+	/**
+		 * Destruction of the servlet. <br>
+		 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+		 * The doGet method of the servlet. <br>
+		 *
+		 * This method is called when a form has its tag value method equals to get.
+		 * 
+		 * @param request the request send by the client to the server
+		 * @param response the response send by the server to the client
+		 * @throws ServletException if an error occurred
+		 * @throws IOException if an error occurred
+		 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doPost(request,response);
+	}
+
+	/**
+		 * The doPost method of the servlet. <br>
+		 *
+		 * This method is called when a form has its tag value method equals to post.
+		 * 
+		 * @param request the request send by the client to the server
+		 * @param response the response send by the server to the client
+		 * @throws ServletException if an error occurred
+		 * @throws IOException if an error occurred
+		 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/***
+		 * 将request解析为inDataBean
+		 */
+		DocListInDataBean inData=new DocListInDataBean();
+		inData.setUserId(request.getParameter("userId"));
+		inData.setNowPage(request.getParameter("nowPage"));
+		inData.setPageNum(request.getParameter("pageNum"));
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("No_staff", inData.getUserId());
+		param.put("nowPage", inData.getNowPage());
+		param.put("pageNum", inData.getPageNum());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		WinningResponse responseW = QueryDocListService.QueryDocList(requestW);
+
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		List retData=new ArrayList();
+		Map responseWretData = responseW.getRetData();
+		VoResponse voResponse=new VoResponse();
+		if(responseW.isSuccess()){
+			try{
+				for(int i=0;i<3;i++){
+				DocListOutDataBean outData = new DocListOutDataBean();
+				outData.setPatientName(responseWretData.get("cPatientName").toString());
+				outData.setPatientCode(responseWretData.get("cPatientCode").toString());
+				outData.setBookId(responseWretData.get("iBookId").toString());
+				outData.setBookName(responseWretData.get("BookName").toString());
+				outData.setRequestTime(responseWretData.get("RequestTime").toString());
+				outData.setPatSex(responseWretData.get("PatSex").toString());
+				outData.setPatAge(responseWretData.get("PatAge").toString());
+				outData.setRequestName(responseWretData.get("RequestName").toString());
+				outData.setRequestDept(responseWretData.get("RequestDept").toString());
+				outData.setRequestTitl(responseWretData.get("RequestTitl").toString());
+				outData.setRequestTel("");
+				retData.add(outData);
+				}
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(retData);
+				voResponse.setRet_count(retData.size());
+			}catch(Exception e){
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:"+responseW.getRetMsg());
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+	/**
+		 * Initialization of the servlet. <br>
+		 *
+		 * @throws ServletException if an error occurs
+		 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+}

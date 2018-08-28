@@ -1,0 +1,112 @@
+package com.java.servlet.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.java.common.util.Constains;
+import com.java.common.util.HttpResponseUtil;
+import com.java.common.vo.VoResponse;
+import com.java.plugins.winning.inpatient.service.QueryDocListService;
+import com.java.plugins.winning.inpatient.service.QueryRecordService;
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+import com.java.servlet.inDataBean.DocListInDataBean;
+import com.java.servlet.inDataBean.QueryRecordInDataBean;
+import com.java.servlet.outDataBean.DocListOutDataBean;
+import com.java.servlet.outDataBean.QueryRecordOutDataBean;
+
+/**
+ * Servlet implementation class QueryRecordServlet
+ */
+@WebServlet("/QueryRecordServlet")
+public class QueryRecordServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public QueryRecordServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		/***
+		 * 将request解析为inDataBean
+		 */
+		QueryRecordInDataBean inData=new QueryRecordInDataBean();
+		inData.setUserId(request.getParameter("userId"));
+		inData.setNowPage(request.getParameter("nowPage"));
+		inData.setPageNum(request.getParameter("pageNum"));
+		inData.setCheckDate(request.getParameter("checkDate"));
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("No_staff", inData.getUserId());
+		param.put("CheckDate", inData.getCheckDate());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+		WinningResponse responseW = QueryRecordService.QueryRecord(requestW);
+
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		QueryRecordOutDataBean outData = new QueryRecordOutDataBean();
+		Map responseWretData = responseW.getRetData();
+		VoResponse voResponse=new VoResponse();
+		if(responseW.isSuccess()){
+			try{
+				outData.setTotalNum("");
+				outData.setPatientName(responseWretData.get("cPatientName").toString());
+				outData.setPatientCode(responseWretData.get("cPatientCode").toString());
+				outData.setBookId("");
+				outData.setBookName(responseWretData.get("BookName").toString());
+				outData.setCheckDate(responseWretData.get("CheckDate").toString());
+				outData.setPatSex(responseWretData.get("PatSex").toString());
+				outData.setPatAge(responseWretData.get("PatAge").toString());
+				outData.setiStatus(responseWretData.get("iStatus").toString());
+				outData.setRequestName(responseWretData.get("RequestName").toString());
+				outData.setRequestDept(responseWretData.get("RequestDept").toString());
+				outData.setRequestTitl(responseWretData.get("RequestTitl").toString());
+				outData.setRequestTel("");
+				voResponse.setRetCode(Constains.SUCCESS_CODE);
+				voResponse.setRetCode(Constains.SUCCESS_MSG);
+				voResponse.setRetData(outData);
+			}catch(Exception e){
+				voResponse.setRetCode(Constains.ERROR_CODE);
+				voResponse.setRetMsg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRetCode(Constains.ERROR_CODE);
+			voResponse.setRetMsg("访问异常:"+responseW.getRetMsg());
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+
+
+}

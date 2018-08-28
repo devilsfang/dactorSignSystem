@@ -1,0 +1,16 @@
+package com.java.plugins.winning.inpatient.service;
+
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+
+public class QueryDocListService {
+
+	public static WinningResponse queryDocList(WinningRequest request){
+		WinningResponse response=new WinningResponse();
+		
+		
+		
+		return response;
+		
+	}
+}

@@ -1,0 +1,137 @@
+var appName="/dssweb";
+$(function() {
+	myData = GetUrlParam();
+	pages = [ loadPage() ];
+	thisPage = pages[0];
+	bindSlider();
+});
+function loadPage() {
+	return $("#page")
+			.ligerPage(
+					{
+						title : "医生审签",
+						backButton : "返回",
+						backPage : "/allograph.html",
+						propertyButton : false,
+						prefixID : "scsContacts_cx",
+						iconEnable : false,
+						content : [ {
+							group : " ",
+
+							hideGroup : true,
+							type : "tabPage",
+							onChange:sliderVisible,
+							id : "myContacts",
+							pages : [
+									{
+										tabPage : true,
+										tabId : "myCollection",
+										prefixID : "myCollection",
+										tabName : "<div class='center'><div class='bar' ><img src='8.png'></div><span>住院记录<span><div>",
+										content : [ {
+											id : "userCurrentFun",
+											group : "家长功能",
+											type : "grid",
+											unformat : true,
+											hideGrouptTips : false,
+											// onBeforBuild : removeSuper,
+											gridData : [ {
+												id : 1,
+												name : "谁啊"
+											}, ],
+											// gridParam : {},
+											// onClick : selectionFun,
+											emptyText : "没有要审签的",
+											columns : [
+													{
+														cells : [ {
+															render : function(
+																	gridData) {
+															
+															}
+														} ]
+													},
+											 ]
+										} ]
+
+									}, {
+										tabPage : true,
+										tabId : "scsStudentContacts",
+										prefixID : "scsStudentContacts",
+										tabName : "历史审批",
+										labelWidth : 70,
+										content : []
+									}, {
+										tabPage : true,
+										tabId : "scsStudentContacts",
+										prefixID : "scsStudentContacts",
+										tabName : "患者详情 ",
+										labelWidth : 70,
+										content : []
+									} ]
+						} ]
+					});
+}
+function dateChanged(newDate) {
+	thisPage.grids[0].gridParam.startTime = newDate.replace("年", "-").replace(
+			"月", "-").replace("日", "");
+	thisPage.reLoadData(1, 0, "grid");
+}
+
+function bindSlider(){
+	
+	var html=$("<div id='container'></div>")
+	var sliderContainer=$("<div id='sliderContainer'></div>");
+	var correct=$("<div id='correct'>批改</div>");
+	var pass=$("<div id='pass'>通过</div>");
+	var select=$(" <div id='select'><img class='arrow' src='"+appName+"/resource/images/icon/leftArrow.png'>请滑动选择<img class='arrow' src='"+appName+"/resource/images/icon/rightArrow.png'></div>");
+	var slider=$("<div id='slider'></div>");
+	var sliderBox=$("<div id='sliderBox'></div>");
+	html.append(sliderContainer.append(correct).append(pass).append(select)).append(sliderBox.append(slider));
+
+	$("body").append(html);
+	
+	var sliderjs=$("#slider");
+	var xOld=0;
+	var startX;
+	var xNow;
+	sliderjs.bind("touchstart",function(e){
+		startX=e.originalEvent.touches[0].clientX;
+	});
+
+	sliderjs.bind("touchmove",function(e){
+	    xNow=e.originalEvent.touches[0].clientX-startX;
+		if(xNow>20||xNow<-20){
+			sliderjs.css("transform","translateX("+xNow+"px)");
+			
+		}
+		if(xNow>80){
+			//window.location.href = "test.html";
+			$("#sliderContainer").css("animation","pass 2s");
+			$("#pass").css("color","white");
+			$("#correct").css("display","none");
+			$("#select").css("display","none");
+		}
+		if(xNow<-80){
+			//window.location.href = "test.html";
+			$("#sliderContainer").css("animation","correct 2s");
+			$("#pass").css("display","none");
+			$("#correct").css("color","white");
+			$("#select").css("display","none");
+		}
+		
+	});
+	sliderjs.bind("touchend",function(e){
+		if(-120<xNow<120){
+			sliderjs.css("transform","translateX("+0+"px)");
+			$("#sliderContainer").css("background-color","#b9d1db");
+		}
+	});
+ 
+}
+function sliderVisible(target,toIndex){
+	if(toIndex==0)
+		 $("#container").slideDown(300);
+	else
+		 $("#container").slideUp(300);
+}

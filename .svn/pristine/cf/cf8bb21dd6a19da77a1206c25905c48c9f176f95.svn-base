@@ -1,0 +1,27 @@
+package com.java.common.vo;
+
+public class VoResponse {
+	String retCode;
+	String retMsg;
+	Object retData;
+	
+	public String getRetCode() {
+		return retCode;
+	}
+	public void setRetCode(String retCode) {
+		this.retCode = retCode;
+	}
+	public String getRetMsg() {
+		return retMsg;
+	}
+	public void setRetMsg(String retMsg) {
+		this.retMsg = retMsg;
+	}
+	public Object getRetData() {
+		return retData;
+	}
+	public void setRetData(Object retData) {
+		this.retData = retData;
+	}
+	
+}

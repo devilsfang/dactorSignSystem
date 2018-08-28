@@ -1,0 +1,134 @@
+package common;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import net.sf.json.JSON;
+
+/**
+ * 配置类
+ * 
+ * @author lst
+ */
+public class Config {
+	/** 默认配置文件 */
+	private static final String DEFAULT_CONFIG_PATH = "config.properties";
+
+	public static int AppMessagePort;
+	public static String  AppVersion;
+	public static String  ApkUrl;
+	public static String  Config;
+	public static String CopyRight;
+	public static String CallForHelp;
+    public static String CallForContact;
+    public static String AddrForContact;
+	/** log4j 日志记录对象 */
+	private Log logger = LogFactory.getLog(Config.class);
+	/** 配置对象 */
+	public static Config instance = null;
+	/** 配置文件对象 */
+	private Properties properties;
+	/** 定时器 */
+	private Timer reloadTimer;   
+
+	/**
+	 * 单例对象构造方法
+	 */
+	private Config() {
+		reloadTimer = new Timer();
+		loadPropertiesFromSrc();
+		TimerTask task = new TimerTask() {
+			public void run() {
+				loadPropertiesFromSrc();
+			}
+		};
+		reloadTimer.schedule(task, 10000L, 10000L);
+	}
+
+	/**
+	 * 获取配置对象实例
+	 * 
+	 * @return {@link winnigCnfig} 微信配置类
+	 */
+	public static Config getInstance() {
+		if (instance == null) {
+			instance = new Config();
+		}
+		return instance;
+	}
+
+	public void loadPropertiesFromSrc() {
+		InputStream inStream = null;
+		try {
+			inStream = Config.class.getClassLoader().getResourceAsStream(DEFAULT_CONFIG_PATH);
+			if (inStream != null) {
+				this.properties = new Properties();
+				this.properties.load(inStream);
+				loadProperties(this.properties);
+			} else {
+				throw new FileNotFoundException("Not found Config properties");
+			}
+		} catch (Exception e) {
+			logger.error("Load Config properties failure", e);
+		} finally {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					logger.error("Close inputstream failure", e);
+				}
+			}
+		}
+	}
+
+	public void loadPropertiesFromPath(String path) {
+		File file = new File(path);
+		InputStream inStream = null;
+		try {
+			inStream = new FileInputStream(file);
+			this.properties = new Properties();
+			this.properties.load(inStream);
+			loadProperties(this.properties);
+		} catch (FileNotFoundException e) {
+			logger.error("Not found Config properties: " + path, e);
+		} catch (IOException e) {
+			logger.error("Load Config properties failure", e);
+		} finally {
+			if (inStream != null) {
+				try {
+					inStream.close();
+				} catch (IOException e) {
+					logger.error("Close inputstream failure", e);
+				}
+			}
+		}
+	}
+
+	private void loadProperties(Properties properties) {
+
+		try {
+//			logger.info("reload Config-------------------------------------------");
+			AppMessagePort = Integer.parseInt(properties.getProperty("AppMessagePort"));
+			AppVersion=properties.getProperty("AppVersion");
+			ApkUrl=properties.getProperty("ApkUrl");
+			Config=properties.getProperty("Config").toString();
+			CopyRight=properties.getProperty("CopyRight");
+			CallForHelp=properties.getProperty("CallForHelp");
+			CallForContact=properties.getProperty("CallForContact");
+			AddrForContact=properties.getProperty("AddrForContact");
+		} catch (Exception e) {
+			logger.error("Config error");
+		}
+
+	}
+
+}

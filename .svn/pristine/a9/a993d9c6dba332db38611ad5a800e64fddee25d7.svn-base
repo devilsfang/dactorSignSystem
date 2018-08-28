@@ -1,0 +1,229 @@
+
+
+.DoctorOrder {
+	position: relative;
+	margin: 10px 5px;
+	text-align: left;
+	    box-shadow: 2px 2px 2px #ccc;
+}
+.DoctorOrder div {
+	transition: 0.3s;
+	-moz-transition: 0.3s; /* Firefox 4 */
+	-webkit-transition: 0.3s; /* Safari 和 Chrome */
+	-o-transition: 0.3s;
+}
+.DOTop {
+	width: 100px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.DOTriangleBox {
+	position: absolute;
+	top: 0;
+	right: 60px;
+	width: 30px;
+	height: 30px;
+	overflow: hidden;
+	z-index: 2;
+}
+
+.DOTriangle {
+	width: 0px;
+	height: 0px;
+	border-width: 30px;
+	border-style: solid;
+}
+
+.DOStatusBg {
+	background-color: #09C;
+	color: #fff;
+	position: absolute;
+	top: 0;
+	right: 0px;
+	width: 60px;
+	height: 30px;
+	overflow: hidden;
+	z-index: 1;
+}
+
+.DOStatus {
+	line-height: 10px;
+	color: #fff;
+	position: absolute;
+	top: 0;
+	right: 0px;
+	width: 60px;
+	height: 30px;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.DOStatus .status {
+	font-size: 16px;
+	line-height: 30px;
+}
+
+.DOStatus span {
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.DOText {
+	background-color: #FFF;
+	padding: 8px;
+}
+
+.DOStratName {
+	font-size: 20px;
+	line-height: 24px;
+	color: #09C;
+}
+
+.DOStartTime {
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 20px;
+	width: 120px;
+	background-color: #09C;
+	color: #fff;
+	text-align: center;
+	margin: -24px auto 0px auto;
+}
+
+.DOcontent {
+	padding: 8px;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.DOEndTime {
+	border-radius: 10px;
+	font-size: 12px;
+	line-height: 20px;
+	width: 280px;
+	background-color: #999;
+	color: #fff;
+	text-align: center;
+	margin: 0px auto 0px auto;
+}
+
+.DOEndName {
+	color: #999;
+	font-size: 18px;
+	line-height: 30px;
+}
+
+body {
+	background-color: #9CF;
+}
+
+.workingBorder {
+	border-top: #09C solid 3px;
+}
+
+.endingBorder {
+	border-top: #999 solid 3px;
+}
+
+.workingBack {
+	background-color: #09C;
+}
+
+.endingBack {
+	background-color: #999;
+}
+
+.workingText .DOStratName {
+	color: #09C;
+}
+
+.workingText .DOStartTime {
+	background-color: #09C;
+}
+
+.endingText .DOStratName {
+	color: #999;
+}
+
+.endingText .DOStartTime {
+	background-color: #999;
+}
+
+.workingTriangle {
+	background-color: #09C;
+	border-color: #09C #fff #09C #FFF;
+}
+
+.endingTriangle {
+	background-color: #999;
+	border-color: #999 #FFF #999 #FFF;
+}
+.workingText .DOEndTime,.workingText .DOEndName{
+	display: none;
+}
+.DOmin .DOStratName, .DOmin .DOStartTime, .DOmin .DOEndTime, .DOmin .DOEndName
+	{
+	display: none;
+}
+
+.DOmin .DOTriangleBox {
+	position: absolute;
+	top: -3px;
+	right: 65px;
+	width: 62px;
+	height: 62px;
+	overflow: hidden;
+}
+
+.DOmin .DOTriangle {
+	border-width: 62px;
+	margin-left: -62px;
+}
+
+.DOmin .DOStatus {
+	right: 10px;
+	top: -3px;
+	width: 90px;
+	height: 62px;
+	color: #333;
+	text-align: right;
+}
+
+.DOmin .status {
+	display: none;
+}
+
+.DOmin .DOStatusBg {
+	top: -3px;
+	width: 100px;
+	height: 62px;
+	background: #fff;
+}
+
+.DOmin .DOcontent {
+	position: relative;
+	z-index: 9;
+	height: 32px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	padding-top: 0px;
+	margin-bottom: 3px;
+}
+
+.DOmin .DOText {
+	color: #fff;
+	padding-right: 100px;
+}
+
+.DOmin .endingText {
+	background-color: #999;
+}
+
+.DOmin .workingText {
+	background-color: #09C;
+}

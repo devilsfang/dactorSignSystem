@@ -1,0 +1,142 @@
+package test.command;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import common.util.Constains;
+import common.util.HttpResponseUtil;
+import common.util.StringUtil;
+import common.vo.VoResponse;
+import plugins.winning.inpatient.service.QueryDocListService;
+import plugins.winning.inpatient.service.SignDetailService;
+import plugins.winning.inpatient.vo.WinningRequest;
+import plugins.winning.inpatient.vo.WinningResponse;
+import servlet.inDataBean.QueryPatientInDataBean;
+import servlet.inDataBean.QueryRecordInDataBean;
+import servlet.inDataBean.SignDetailInDataBean;
+import servlet.outDataBean.QueryRecordOutDataBean;
+import servlet.outDataBean.SignDetailOutDataBean;
+
+/**
+ * Servlet implementation class SignDetailServlet
+ */
+@WebServlet("/test/SignDetail")
+public class SignDetailServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	boolean test = false;  
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public SignDetailServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doPost(request, response);
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		SignDetailInDataBean inData=new SignDetailInDataBean();
+		VoResponse voResponse = new VoResponse();
+		
+		try {
+			inData.setBookId(request.getParameter("bookId"));
+
+			if (StringUtil.isEmpty(inData.getBookId())) {
+				throw new Exception("参数不能为空");
+			}
+		} catch (Exception e) {
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("参数异常：" + e.getMessage());
+			HttpResponseUtil.response(voResponse, response);
+			return;
+		}
+		WinningResponse responseW = new WinningResponse();
+		
+		
+		
+		
+		if (!test) {
+		
+
+		/***
+		 * 将inDataBean转换为winning的request
+		 */
+		Map param = new HashMap();
+		param.put("iBookId", inData.getBookId());
+		WinningRequest requestW = new WinningRequest();
+		requestW.setParam(param);
+		/***
+		 * 调用winning的服务进行业务请求
+		 */
+	   responseW = SignDetailService.SignDetailService(requestW);
+		}else {
+			 Map testData = new HashMap();
+			/*testData.put("bookId","123456" );*/
+			testData.put("bookName","审查文书标题" );
+			testData.put("textFormat","" );
+			testData.put("text","审签详情的内容" );
+			
+			
+			if(inData.getBookId().equals("123456")){
+				responseW.setRetCode("0000");
+				responseW.setRetMsg("");
+				responseW.setRetData(testData);
+			}else{
+				responseW.setRetCode("9999");
+				responseW.setRetMsg("不存在此用户");
+			}
+			
+		}
+		/***
+		 * 将winning的 response解析为vo 1.将retData字符串转换为json对象 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		SignDetailOutDataBean outData = new SignDetailOutDataBean();
+		Map responseWretData = responseW.getRetData();
+		
+		if(responseW.isSuccess()){
+			try{
+				outData.setBookName(responseWretData.get("bookName").toString());
+				outData.setTextFormat("");
+				outData.setText(responseWretData.get("text").toString());
+				voResponse.setRet_code(Constains.SUCCESS_CODE);
+				voResponse.setRet_msg(Constains.SUCCESS_MSG);
+				voResponse.setRet_data(outData);
+				voResponse.setRet_count(1);
+			}catch(Exception e){
+				voResponse.setRet_code(Constains.ERROR_CODE);
+				voResponse.setRet_msg("返回数据异常："+e.getMessage());
+			}
+			
+		}else{
+			voResponse.setRet_code(Constains.ERROR_CODE);
+			voResponse.setRet_msg("访问异常:"+responseW.getRetMsg());
+		}
+		
+		HttpResponseUtil.response(voResponse, response);
+	}
+	public void init() throws ServletException {
+		// Put your code here
+		String packageName = QueryPatientServlet.class.getPackage().getName();
+		if (packageName.indexOf("test.") >= 0)
+			test = true;
+	}
+
+}

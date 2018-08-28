@@ -1,0 +1,9 @@
+LoginUrl=http://111.111.112.63:8090/api/WebApi/WN_Welcom
+TreeUrl=http\://111.111.112.65\:8024/api/WebApi/WN_PatTree
+SignDetailUrl=http://111.111.112.63\:8090/api/WebApi/WN_CaseContent
+PatientDetailUrl=http://111.111.112.65\:8024/api/WebApi/WN_CaseContent
+QueryPatientUrl=http://127.0.0.1/dssweb/WN
+QueryRecordUrl=http://127.0.0.1/dssweb/WN
+SignHistoryOpinionUrl=http://127.0.0.1/dssweb/WN
+SignOpnionFillUrl=http://111.111.112.63\:8090/api/WebApi/WN_ExaminationApproval
+QueryDocListUrl=http://111.111.112.63:8090/api/WebApi/WN_CheckList

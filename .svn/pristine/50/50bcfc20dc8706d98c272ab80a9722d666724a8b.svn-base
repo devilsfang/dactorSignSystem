@@ -1,0 +1,92 @@
+package socket.service.appMessage;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.sun.jmx.snmp.Timestamp;
+
+public class ClientManager {
+	private static Map<String,Client> clients=new HashMap<String,Client>();
+	
+	public static int count(){
+		return clients.size();
+	}
+	
+	public static List getList(){
+		List list=new ArrayList();
+		for(Map.Entry<String,Client> entry : clients.entrySet()){
+			Map testData = new HashMap();
+			Client c=entry.getValue();
+			SimpleDateFormat formant=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			testData.put("userId", c.getUserId());
+			testData.put("creatTime", formant.format(c.getCreatTime().getDate()));
+			testData.put("updateTime", formant.format(c.getUpdateTime().getDate()));
+			list.add(testData);
+		}
+		return list;
+	}
+	
+	public static void put(String userId,Socket socket){
+		clients.put(userId,new Client(userId,socket));
+	}
+	public static void send(String userId,String message){
+		try {
+			OutputStream dos= clients.get(userId).getSocket().getOutputStream();
+			dos.write(message.getBytes());
+			dos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public Socket getSocket(String userId){
+		return this.clients.get(userId).getSocket();
+	}
+	
+	public static class Client{
+		String userId;
+		Timestamp creatTime;
+		Timestamp updateTime;
+		Socket socket;
+
+		public Client(String userId,Socket socket){
+			this.userId=userId;
+			this.socket=socket;
+			this.creatTime=new Timestamp();
+			this.updateTime=new Timestamp();
+		}
+		
+		public String getUserId() {
+			return userId;
+		}
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+		public Timestamp getCreatTime() {
+			return creatTime;
+		}
+		public void setCreatTime(Timestamp creatTime) {
+			this.creatTime = creatTime;
+		}
+		public Timestamp getUpdateTime() {
+			return updateTime;
+		}
+		public void setUpdateTime(Timestamp updateTime) {
+			this.updateTime = updateTime;
+		}
+		public Socket getSocket() {
+			return socket;
+		}
+		public void setSocket(Socket socket) {
+			this.socket = socket;
+		}
+		
+		
+	}
+}

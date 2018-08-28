@@ -1,0 +1,39 @@
+package servlet.inDataBean;
+
+public class SignOpinionFillInDataBean {
+	String iRecordId;
+	String iDiagnoseId;
+	String checkId;
+	String checkContent;
+	String iStatus;
+	public String getiRecordId() {
+		return iRecordId;
+	}
+	public void setiRecordId(String iRecordId) {
+		this.iRecordId = iRecordId;
+	}
+	public String getiDiagnoseId() {
+		return iDiagnoseId;
+	}
+	public void setiDiagnoseId(String iDiagnoseId) {
+		this.iDiagnoseId = iDiagnoseId;
+	}
+	public String getCheckId() {
+		return checkId;
+	}
+	public void setCheckId(String checkId) {
+		this.checkId = checkId;
+	}
+	public String getCheckContent() {
+		return checkContent;
+	}
+	public void setCheckContent(String checkContent) {
+		this.checkContent = checkContent;
+	}
+	public String getiStatus() {
+		return iStatus;
+	}
+	public void setiStatus(String iStatus) {
+		this.iStatus = iStatus;
+	}
+}

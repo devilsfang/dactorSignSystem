@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>test.html</title>
+
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+<meta charset="UTF-8">
+<script src="/dssweb/js/UI2.0/js/jsloader.js" type="text/javascript"></script>
+<script src="/dssweb/js/UI2.0/js/allUIPkg.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+	var appName = "/dssweb";
+	$(function() {
+		// 对页面进行初始化
+		init();
+
+	});
+	function init() {
+		myData = GetUrlParam();
+		pages = [ loadPage() ];
+		thisPage = pages[0];
+	}
+	;
+	function loadPage() {
+		return $("#page")
+			.ligerPage(
+				{
+					title : "医生签字",
+					foot : defaultFoot,
+					backButton : false,
+					propertyButton : false,
+					prefixID : "default",
+					iconEnable : false,
+					labelWidth : 25,
+					content : [
+						{
+							group : " ",
+							hideGroup : true,
+							hideGroupTips : true,
+							id : "a",
+							type : "grid",
+							gridUrl : "/dssweb/WN",
+							gridParam : myData,
+							columns : [ {
+								cells : [ {
+									display : "name"
+								} ]
+							} ]
+						} ]
+				});
+
+	}
+	function thisPageAjax() {
+		thisPage.Ajax("/dssweb/WN", {
+			type : 1
+		}, true, true, function success(ret) {
+			alert(ret.ret_code);
+		});
+	}
+	function jqAjax() {
+		showShade();
+		$.ajax({
+			url : "/dssweb/WN",
+			data : {
+				type : 1
+			},
+			dataType : 'json',
+			type : "post",
+			success : function(msg) {
+				alert(msg.ret_code);
+				hideShade();
+			},
+			error : function(response) {
+				alert(response);
+			}
+		});
+	}
+</script>
+
+</head>
+
+<body>
+	<div id="page"></div>
+</body>
+</html>

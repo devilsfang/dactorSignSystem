@@ -1,0 +1,96 @@
+package com.java.servlet.command;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.java.common.util.Constains;
+import com.java.common.util.HttpResponseUtil;
+import com.java.common.vo.VoResponse;
+import com.java.plugins.winning.inpatient.service.QueryDocListService;
+import com.java.plugins.winning.inpatient.vo.WinningRequest;
+import com.java.plugins.winning.inpatient.vo.WinningResponse;
+import com.java.servlet.outDataBean.DocListOutDataBean;
+
+public class DocListServlet extends HttpServlet {
+
+	/**
+		 * Constructor of the object.
+		 */
+	public DocListServlet() {
+		super();
+	}
+
+	/**
+		 * Destruction of the servlet. <br>
+		 */
+	public void destroy() {
+		super.destroy(); // Just puts "destroy" string in log
+		// Put your code here
+	}
+
+	/**
+		 * The doGet method of the servlet. <br>
+		 *
+		 * This method is called when a form has its tag value method equals to get.
+		 * 
+		 * @param request the request send by the client to the server
+		 * @param response the response send by the server to the client
+		 * @throws ServletException if an error occurred
+		 * @throws IOException if an error occurred
+		 */
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		doPost(request,response);
+	}
+
+	/**
+		 * The doPost method of the servlet. <br>
+		 *
+		 * This method is called when a form has its tag value method equals to post.
+		 * 
+		 * @param request the request send by the client to the server
+		 * @param response the response send by the server to the client
+		 * @throws ServletException if an error occurred
+		 * @throws IOException if an error occurred
+		 */
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		WinningRequest requestW=new WinningRequest();
+		WinningResponse responseW= QueryDocListService.queryDocList(requestW);
+		
+		List<DocListOutDataBean> outData=new ArrayList();
+		String responseWretData=responseW.getAppId();
+		/***
+		 * 1.将retData字符串转换为json对象
+		 * 2.遍历json数组，将多行数据放入list
+		 * 3.使用工具类，将outData通过response响应给请求端
+		 */
+		
+		
+		HttpResponseUtil.response(getVoResponse(outData), response);
+
+	}
+
+	/**
+		 * Initialization of the servlet. <br>
+		 *
+		 * @throws ServletException if an error occurs
+		 */
+	public void init() throws ServletException {
+		// Put your code here
+	}
+	public VoResponse getVoResponse(List<DocListOutDataBean> outData) {
+		VoResponse voResponse = new VoResponse();
+		voResponse.setRetCode(Constains.SUCCESS_CODE);
+		voResponse.setRetMsg(Constains.SUCCESS_MSG);
+		voResponse.setRetData(outData);
+		return voResponse;
+	}
+}

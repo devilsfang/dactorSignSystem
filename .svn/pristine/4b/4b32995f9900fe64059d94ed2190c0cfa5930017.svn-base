@@ -1,0 +1,88 @@
+package servlet.outDataBean;
+
+import common.vo.VoResponse;
+
+public class DocListOutDataBean{
+
+
+	String patientName;
+	String patientCode;
+	String bookId;
+	String bookName;
+	String requestTime;
+	String patSex;
+	String patAge;
+	String requestName;
+	String requestDept;
+	String requestTitl;
+	String requestTel;
+
+	
+	public String getPatientName() {
+		return patientName;
+	}
+	public void setPatientName(String patientName) {
+		this.patientName = patientName;
+	}
+	public String getPatientCode() {
+		return patientCode;
+	}
+	public void setPatientCode(String patientCode) {
+		this.patientCode = patientCode;
+	}
+	public String getBookId() {
+		return bookId;
+	}
+	public void setBookId(String bookId) {
+		this.bookId = bookId;
+	}
+	public String getBookName() {
+		return bookName;
+	}
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
+	}
+	public String getRequestTime() {
+		return requestTime;
+	}
+	public void setRequestTime(String requestTime) {
+		this.requestTime = requestTime;
+	}
+	public String getPatSex() {
+		return patSex;
+	}
+	public void setPatSex(String patSex) {
+		this.patSex = patSex;
+	}
+	public String getPatAge() {
+		return patAge;
+	}
+	public void setPatAge(String patAge) {
+		this.patAge = patAge;
+	}
+	public String getRequestName() {
+		return requestName;
+	}
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
+	}
+	public String getRequestDept() {
+		return requestDept;
+	}
+	public void setRequestDept(String requestDept) {
+		this.requestDept = requestDept;
+	}
+	public String getRequestTitl() {
+		return requestTitl;
+	}
+	public void setRequestTitl(String requestTitl) {
+		this.requestTitl = requestTitl;
+	}
+	public String getRequestTel() {
+		return requestTel;
+	}
+	public void setRequestTel(String requestTel) {
+		this.requestTel = requestTel;
+	}
+	
+}
